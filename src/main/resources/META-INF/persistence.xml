@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+ 
+    <persistence-unit name="safiraPU" transaction-type="JTA" >
+       
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>
+       
+        <class>model.Acerto</class>
+		<class>model.Afastamento</class>
+		<class>model.Cargo</class>
+		<class>model.Colaborador</class>
+		<class>model.Depto</class>
+		<class>model.Empresa</class>
+		<class>model.Feriado</class>
+		<class>model.FeriadoPK</class>
+		<class>model.Filial</class>
+		<class>model.Folga</class>
+		<class>model.Grupo</class>
+		<class>model.Historico</class>
+		<class>model.Horario</class>
+		<class>model.HorarioAvulso</class>
+		<class>model.HorarioColaborador</class>
+		<class>model.HorarioColaboradorPK</class>
+		<class>model.HorarioJornada</class>
+		<class>model.HorarioJornadaPK</class>
+		<class>model.Jornada</class>
+		<class>model.Log</class>
+		<class>model.Marcacao</class>
+		<class>model.MarcacaoDetalhe</class>
+		<class>model.MarcacaoOriginal</class>
+		<class>model.MarcacaoProcessada</class>
+		<class>model.MotivoAbono</class>
+		<class>model.MotivoAfastamento</class>
+		<class>model.Norma</class>
+		<class>model.NormaColaborador</class>
+		<class>model.NormaColaboradorPK</class>
+		<class>model.Ocorrencia</class>
+		<class>model.OcorrenciaApurada</class>
+		<class>model.Relogio</class>
+		<class>model.Usuario</class>
+		<class>model.PreCadastroEmpregador</class>
+		<class>model.LanctoBancoHora</class>
+	
+        
+        
+       
+        
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="hibernate.default_schema" value="public"/>
+
+        </properties>
+        
+
+ 
+    </persistence-unit>
+</persistence>

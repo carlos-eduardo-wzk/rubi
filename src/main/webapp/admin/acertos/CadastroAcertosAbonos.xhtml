@@ -1,0 +1,574 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="corpo">
+	
+
+		<h:outputScript target="head" library="js" name="mascaraHora.js" />
+		<h:form id="frm">
+			<h:panelGroup>
+				<p:outputLabel value="manutenção do ponto - acerto/abono "
+					style="font-weight:bold;font-size:16px;	" />
+				<p:spacer width="10px" />
+				<!-- 				<p:outputLabel value="#{acertoAbono.tipo} /> -->
+
+			</h:panelGroup>
+
+			<p:messages autoUpdate="true" closable="true" />
+
+			<p:toolbar style="margin-top:1px">
+
+				<p:toolbarGroup>
+					<p:commandButton value="Filtro" type="button"
+						title="motra as marcaçoes do período"
+						onclick="PF('dlgFiltro').show();" update="tabelaAcerto" />
+				</p:toolbarGroup>
+
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Recalcular" id="botaoRecalculo"
+						update="@form" title="Recalcula os registros filtrados"
+						action="#{acertoAbonos.recalculo}" />
+				</p:toolbarGroup>
+
+
+			</p:toolbar>
+
+			<!-- FILTRO -->
+			<p:dialog header="Filtro para acerto" widgetVar="dlgFiltro"
+				modal="true" width="51%">
+
+				<p:panelGrid columns="2" style="width: 100%; margin-top: 20px"
+					columnClasses="rotuloCadastro2 ,campoCadastro2">
+
+					<p:outputLabel id="matricula" value="Matrícula" style="width:60px"
+						styleClass="rotuloCampo" />
+					<p:inputTextarea rows="1" cols="80"
+						value="#{acertoAbonos.matricula}"
+						placeholder="para colocar mais de uma matricula, separar por virgula" />
+
+					<p:outputLabel id="Nome" value="Nome" style="width:60px"
+						styleClass="rotuloCampo" />
+
+					<h:panelGroup>
+
+						<p:inputText id="cola" style="width:200px"
+							value="#{acertoAbonos.nomeSele}" />
+						<p:commandButton icon="ui-icon-search" title="pesquisar"
+							process="@this" update="@none"
+							action="#{selecaoColaboradorBean.abrirDialogo}"
+							ignoreAutoUpdate="true">
+
+							<p:ajax event="dialogReturn"
+								listener="#{acertoAbonos.colaboradorSelecionado}" update="cola"
+								ignoreAutoUpdate="true" />
+
+
+						</p:commandButton>
+					</h:panelGroup>
+
+					<p:outputLabel value="Empresa" for="empresa"
+						styleClass="rotuloCampo" />
+					<p:selectOneMenu id="empresa"
+						value="#{acertoAbonos.empresaSelecionada}" style="width:280px"
+						required="true">
+						<f:selectItems value="#{acertoAbonos.listaEmpresa}" var="empresa"
+							itemValue="#{empresa}" itemLabel="#{empresa.razaoSocial}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Filial" for="filial" styleClass="rotuloCampo" />
+					<p:selectOneMenu id="filial"
+						value="#{acertoAbonos.filialSelecionada}" style="width:280px">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItems value="#{acertoAbonos.listaFilial}" var="filial"
+							itemValue="#{filial}" itemLabel="#{filial.filial}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Depto" for="depto" styleClass="rotuloCampo" />
+					<p:selectOneMenu id="depto"
+						value="#{acertoAbonos.deptoSelecionada}" style="width:280px">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItems value="#{acertoAbonos.listaDepto}" var="depto"
+							itemValue="#{depto}" itemLabel="#{depto.depto}" />
+					</p:selectOneMenu>
+
+
+
+					<p:outputLabel value="Período" styleClass="rotuloCampo" />
+					<h:panelGroup>
+						<p:calendar id="dtini" required="true" pattern="dd/MM/yyyy EEE"
+							value="#{acertoAbonos.dtini}" navigator="true" pages="1"
+							mode="popup" locale="pt" size="12"
+							requiredMessage="Data inicial obrigatória">
+						</p:calendar>
+									  a
+						<p:calendar id="dtfim" required="true"
+							value="#{acertoAbonos.dtfim}" pattern="dd/MM/yyyy EEE"
+							navigator="true" pages="1" mode="popup" locale="pt" size="12"
+							requiredMessage="Data final obrigatória">
+						</p:calendar>
+						<p:message for="dtfim" />
+					</h:panelGroup>
+
+
+
+					<p:outputLabel value="Tipo" styleClass="rotuloCampo" />
+					<p:selectManyCheckbox id="tipo2"
+						value="#{acertoAbonos.selectedTipos}">
+						<f:selectItem itemLabel="Todos exceto faltas, afastamentos,folgas"
+							itemValue="TODOS" />
+						<f:selectItem itemLabel="Divergencia" itemValue="Divergencia" />
+						<f:selectItem itemLabel="Atraso" itemValue="ATRASO" />
+						<f:selectItem itemLabel="Saida" itemValue="SAIDA" />
+						<f:selectItem itemLabel="Falta" itemValue="FALTA" />
+						<f:selectItem itemLabel="HE" itemValue="HE" />
+						<f:selectItem itemLabel="Afastamento" itemValue="AF" />
+						<f:selectItem itemLabel="Folga" itemValue="FO" />
+
+
+
+					</p:selectManyCheckbox>
+
+				</p:panelGrid>
+
+				<p:separator />
+
+				<p:commandButton value="Aplicar"
+					actionListener="#{acertoAbonos.carregaAcerto}"
+					update="tabelaAcerto" oncomplete="PF('dlgFiltro').hide();" />
+				<p:commandButton value="Fechar" oncomplete="PF('dlgFiltro').hide();"
+					ajax="true" />
+
+			</p:dialog>
+			<!-- ABONAR -->
+			<p:dialog header="Abonar - #{acertoAbonos.acertoSelecionado.nome}"
+				widgetVar="dlgAbono" modal="true" id="abonoDialog" width="40%">
+
+				<p:panelGrid columns="2" style="width: 100%; margin-top: 10px"
+					columnClasses="rotuloCadastro2 ,campoCadastro2">
+
+					<p:outputLabel id="matriculaAbonos" value="Matrícula/Nome"
+						style="width:60px" styleClass="rotuloCampo" />
+					<p:outputLabel
+						value="#{acertoAbonos.acertoSelecionado.matricula} - #{acertoAbonos.acertoSelecionado.nome}" />
+
+					<p:outputLabel value="Data" style="width:30px"
+						styleClass="rotuloCampo" />
+					<h:outputText value="#{acertoAbonos.acertoSelecionado.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy EEE" />
+					</h:outputText>
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" style="width: 100%; margin-top: 10px">
+
+					<p:outputLabel value="Atraso" style="width:30px"
+						styleClass="rotuloCampo" />
+					<h:outputText value="#{acertoAbonos.acertoSelecionado.atraso}"
+						converter="converter.Horas" />
+					<p:selectBooleanCheckbox value="#{acertoAbonos.chkAtraso}"
+						itemLabel="Abona">
+
+					</p:selectBooleanCheckbox>
+
+					<p:outputLabel value="Saida" style="width:30px"
+						styleClass="rotuloCampo" />
+					<h:outputText value="#{acertoAbonos.acertoSelecionado.saida}"
+						converter="converter.Horas" />
+					<p:selectBooleanCheckbox value="asas" itemLabel="Abona">
+
+					</p:selectBooleanCheckbox>
+
+
+					<p:outputLabel value="Falta" style="width:30px"
+						styleClass="rotuloCampo" />
+					<h:outputText value="#{acertoAbonos.acertoSelecionado.falta}"
+						converter="converter.Horas" />
+					<p:selectBooleanCheckbox value="aa" itemLabel="Abona">
+
+					</p:selectBooleanCheckbox>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" style="width: 100%; margin-top: 10px">
+
+
+					<p:outputLabel value="Horas a abonar" style="width:60px"
+						styleClass="rotuloCampo" />
+
+					<p:inputText value="#{acertoAbonos.horasAbon}" id="horasAbon"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h04"
+						maxlength="5" style="text-align:center" />
+
+
+					<p:outputLabel value="Motivo Abono" for="motivaAbona"
+						styleClass="rotuloCampo" />
+
+					<p:selectOneMenu id="motivaAbona"
+						value="#{acertoAbonos.motivoAbonoSelecionado}" style="width:280px">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItems value="#{acertoAbonos.listaMotivoAbono}"
+							var="motivoAbono" itemValue="#{motivoAbono}"
+							itemLabel="#{motivoAbono.motivoAbono}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+				<p:separator />
+				<p:commandButton value="Aplicar"
+					action="#{acertoAbonos.processarAbono}"
+					oncomplete="PF('dlgAbono').hide();" update="tabelaAcerto" />
+				<p:commandButton value="Fechar" oncomplete="PF('dlgAbono').hide();"
+					ajax="true" />
+			</p:dialog>
+
+			<!-- ACERTO -->
+			<p:dialog header="Acerto - #{acertoAbonos.acertoSelecionado.nome}"
+				widgetVar="dlgAcerto" modal="true" id="acertoDialog" width="42%">
+				<p:panelGrid columns="2" style="width: 100%; margin-top: 10px"
+					columnClasses="rotulo ,campo">
+
+
+					<p:outputLabel id="matriculAcerto" value="Matrícula/PIS"
+						style="width:60px" styleClass="rotuloCampo" />
+					<p:outputLabel
+						value="#{acertoAbonos.acertoSelecionado.matricula} /  #{acertoAbonos.acertoSelecionado.pis}"
+						styleClass="rotuloCampo" />
+
+					<p:outputLabel value="Data" style="width:30px"
+						styleClass="rotuloCampo" />
+					<h:outputText value="#{acertoAbonos.acertoSelecionado.data}"
+						styleClass="rotuloCampo">
+						<f:convertDateTime pattern="dd/MM/yyyy EEE" />
+					</h:outputText>
+
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="9" style="margin-top: 5px;font-weight:bold"
+					columnClasses="null,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8">
+
+					<h:outputText value="Marcações originais" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h1}"
+						converter="converter.Horas"/>
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h2}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h3}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h4}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h5}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h6}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h7}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.marcacaoOriginal.h8}"
+						converter="converter.Horas" />
+				</p:panelGrid>
+				<p:panelGrid columns="9" style="margin-top: 5px;font-weight:bold"
+					columnClasses="null,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8">
+					<h:outputText value="jornada prevista" />
+					<h:outputText value="#{acertoAbonos.jornada.e1}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.s1}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.e2}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.s2}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.e3}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.s3}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.e4}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.s4}"
+						converter="converter.Horas" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="3"
+					style="margin-top: 5px;font-weight:bold;margin-bottom: 5px"
+					columnClasses="null,campoHora8,campoHora8">
+
+					<h:outputText value="Pré-assinalado" />
+					<h:outputText value="#{acertoAbonos.jornada.preassinalados1}"
+						converter="converter.Horas" />
+					<h:outputText value="#{acertoAbonos.jornada.preassinaladoe2}"
+						converter="converter.Horas" />
+				</p:panelGrid>
+
+				<p:commandButton value="Analisa" ajax="true">
+					<p:ajax listener="#{acertoAbonos.ordenaMarcacao}" event="click"
+						update="pnlmarc tabelaAcertoMarcacao"
+						process="@this m1 m2 m3 m4 m5 m6 m7 m8 " />
+				</p:commandButton>
+				<h:outputText value=" não ordena " />
+				<p:selectBooleanCheckbox value="#{acertoAbonos.orderna}" />
+
+				<p:separator />
+
+				<p:panelGrid columns="8" style="margin-top: 5px;font-weight:bold"
+					id="pnlmarc"
+					columnClasses="campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8,campoHora8">
+
+					<p:inputText value="#{acertoAbonos.mE1}" id="m1"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h01"
+						maxlength="5" style="text-align:center" >
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mS1}" id="m2"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h02"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mE2}" id="m3"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h03"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mS2}" id="m4"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h04"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mE3}" id="m5"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h05"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mS3}" id="m6"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h06"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mE4}" id="m7"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h07"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+					<p:inputText value="#{acertoAbonos.mS4}" id="m8"
+						onkeypress="Mascara_Hora(this.value,this)" size="2" lable="h08"
+						maxlength="5" style="text-align:center">
+					</p:inputText>
+
+				</p:panelGrid>
+
+				<p:dataTable id="tabelaAcertoMarcacao"
+					value="#{acertoAbonos.lstMarcacaoDetalheTmp}" var="acertoMarcacao"
+					style="margin-top: 10px" styleClass="fonteMenor"
+					emptyMessage="Nenhum acerto de marcação encontrado." rows="20"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Tipo" style="width:50px;text-align:center">
+						<h:outputText value="#{acertoMarcacao.tipo}" />
+					</p:column>
+
+					<p:column headerText="Horas" style="width:30px;text-align:center">
+						<h:outputText value="#{acertoMarcacao.hora}"
+							converter="converter.Horas" style="text-align:center" />
+					</p:column>
+
+
+					<p:column headerText="Justificativa" style="text-align:center">
+						<p:selectOneMenu id="historico" value="#{acertoMarcacao.motivo }"
+							style="width:95%" editable="true">
+							<f:selectItem itemLabel="Selecione" />
+							<f:selectItems value="#{acertoAbonos.listaHistorico}" var="hist"
+								itemValue="#{hist.historico}" itemLabel="#{hist.historico}" />
+						</p:selectOneMenu>
+
+					</p:column>
+
+				</p:dataTable>
+				<p:separator />
+				<p:commandButton value="Aplicar"
+					action="#{acertoAbonos.processaAcerto}"
+					oncomplete="PF('dlgAcerto').hide();" />
+				<p:commandButton value="Fechar" oncomplete="PF('dlgAcerto').hide();"
+					ajax="true" />
+			</p:dialog>
+
+			<!--        -->
+			<!-- TABELA -->
+			<!--        -->
+			<p:dataTable id="tabelaAcerto" var="acerto"
+				value="#{acertoAbonos.lstobj}" style="margin-top: 10px"
+				styleClass="fonteMenor" selection="#{acertoAbonos.selectedAcertos}"
+				rowKey="#{acerto.id}" rowIndexVar="rowIndex" rows="25"
+				paginator="true" paginatorPosition="bottom"
+				paginatorAlwaysVisible="false" rowsPerPageTemplate="15,25,50"
+				emptyMessage="Nenhum acerto encontrado.">
+
+				<f:facet name="header">
+                  Acerto e abono do ponto 
+                </f:facet>
+
+				<p:column selectionMode="multiple"
+					style="width:16px;text-align:center" />
+
+				<p:column headerText="Data " sortBy="#{acerto.data}"
+					style="font-color:blue ; width:87px">
+					<h:outputText value="#{acerto.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy EEE" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="matricula" style="width:50px"
+					sortBy="#{acerto.matricula}">
+					<h:outputText value="#{acerto.matricula}"
+						styleClass="#{acertoAbonos.createLabel(rowIndex)}" />
+				</p:column>
+
+
+				<p:column headerText="Nome" style="width:300px">
+					<h:outputText value="#{acerto.nome}" />
+				</p:column>
+
+				<p:column headerText="HT" style="width:30px">
+					<h:outputText value="#{acerto.ht }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="Atraso" style="width:30px">
+					<h:outputText value="#{acerto.atraso }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="Saída" style="width:30px">
+					<h:outputText value="#{acerto.saida }" converter="converter.Horas" />
+				</p:column>
+
+
+				<p:column headerText="HE" style="width:30px">
+					<h:outputText value="#{acerto.he }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="Falta" style="width:30px">
+				</p:column>
+
+				<p:column headerText="BH" style="width:25px;text-align:center">
+					<h:outputText value="#{acerto.bancohoras}" converter="converter.Horas" />
+				</p:column>
+
+
+				<p:column headerText="H1" style="width:26px" >
+					<h:outputText id="h1" value="#{acerto.h1}" converter="converter.Horas"  />
+				</p:column>
+
+				<p:column headerText="H2" style="width:26px">
+					<h:outputText id="h2" value="#{acerto.h2 }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="H3" style="width:26px">
+					<h:outputText value="#{acerto.h3 }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="H4" style="width:26px">
+					<h:outputText value="#{acerto.h4 }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="H5" style="width:26px">
+					<h:outputText value="#{acerto.h5 }" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="H6" style="width:26px">
+					<h:outputText value="#{acerto.h6}" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="H7" style="width:26px">
+					<h:outputText value="#{acerto.h7}" converter="converter.Horas" />
+				</p:column>
+
+				<p:column headerText="H8" style="width:26px">
+					<h:outputText value="#{acerto.h8}" converter="converter.Horas" />
+				</p:column>
+
+				<p:column style="width: 100px; text-align: center" headerText="Ação">
+
+					<p:commandButton icon="ui-icon-pencil" title="Abonar"
+						oncomplete="PF('dlgAbono').show()" process="@this"
+						action="#{acertoAbonos.carregaJornada}" update=":frm:abonoDialog">
+						<f:setPropertyActionListener
+							target="#{acertoAbonos.acertoSelecionado}" value="#{acerto}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-gear" title="Acertar"
+						oncomplete="PF('dlgAcerto').show()" process="@this"
+						update=":frm:acertoDialog" action="#{acertoAbonos.carregaJornada}">
+						<f:setPropertyActionListener
+							target="#{acertoAbonos.acertoSelecionado}" value="#{acerto}" />
+					</p:commandButton>
+
+
+					<p:commandButton icon="ui-icon-comment" title="Visualizar apurado"
+						oncomplete="PF('dlgDados').show()" process="@this"
+						update=":frm:dadosDialog"
+						action="#{acertoAbonos.carregaCalculoDados }">
+						<f:setPropertyActionListener
+							target="#{acertoAbonos.acertoSelecionado}" value="#{acerto}" />
+					</p:commandButton>
+
+					
+
+				</p:column>
+
+				<f:facet name="footer">
+
+					<p:commandButton icon="ui-icon-pencil"
+						title="Abonar grupo , selecione os dias primeiro"
+						value="Abonar em grupo" id="btnAbonarGrupo"
+						oncomplete="PF('dlgAbonoGrupo').show()" process="@this" />
+
+				</f:facet>
+			</p:dataTable>
+
+
+			<!-- ABONAR GRUPO -->
+			<p:dialog header="Abonar em grupo" widgetVar="dlgAbonoGrupo"
+				modal="true" id="abonoDialogGrupo" width="40%">
+
+				<p:panelGrid columns="2" style="width: 100%; margin-top: 10px">
+
+					<p:outputLabel value="Motivo Abono" for="motivaAbonaG"
+						styleClass="rotuloCampo" />
+					<p:selectOneMenu id="motivaAbonaG"
+						value="#{acertoAbonos.motivoAbonoSelecionadoGrupo}"
+						style="width:280px">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItems value="#{acertoAbonos.listaMotivoAbono}"
+							var="motivoAbono" itemValue="#{motivoAbono}"
+							itemLabel="#{motivoAbono.motivoAbono}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+				<p:separator />
+
+				<p:commandButton icon="ui-icon-search" value="Aplicar"
+					action="#{acertoAbonos.AbonarGrupo}"
+					oncomplete="PF('dlgAbonoGrupo').hide();" update="tabelaAcerto" />
+
+				<p:commandButton value="Fechar"
+					oncomplete="PF('dlgAbonoGrupo').hide();" ajax="true" />
+			</p:dialog>
+
+			<!-- VISUALIZAR DADOS -->
+			<p:dialog
+				header="Dados do dia - #{acertoAbonos.acertoSelecionado.nome} "
+				widgetVar="dlgDados" modal="true" id="dadosDialog" width="35%"
+				closable="true" closeOnEscape="true">
+
+				<p:inputTextarea rows="6" cols="72"
+					value="#{acertoAbonos.dadosCalculo }" readonly="true" />
+
+			</p:dialog>
+
+
+		</h:form>
+
+	<script type="text/javascript">
+	  function trataBat(obj){
+		 
+		    gNv="";
+	        gId = $(obj).attr("id");
+	        gCell = obj;
+	        gC = $(obj).attr("class");
+	        alert(gId);
+	  }
+	</script>
+	
+	</ui:define>
+
+</ui:composition>
