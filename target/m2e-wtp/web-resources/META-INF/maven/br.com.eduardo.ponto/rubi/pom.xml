@@ -6,14 +6,6 @@
 	<version>1.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-
-	<build>
-		<finalName>rubi</finalName>
-	</build>
-
-
-
-
 	<properties>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -187,7 +179,7 @@
 		<profile>
 			<id>openshift</id>
 			<build>
-				<finalName>rubi</finalName>
+				
 				<plugins>
 
 					<plugin>
@@ -197,7 +189,7 @@
 						<configuration>
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 							<outputDirectory>target</outputDirectory>
-							<warName>ROOT</warName>
+							<warName>rubi</warName>
 						</configuration>
 					</plugin>
 				</plugins>
