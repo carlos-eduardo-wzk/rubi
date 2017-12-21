@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
@@ -28,8 +27,8 @@ public class Horarios implements Serializable {
 	// private EntityManager em;
 	private Session session;
 
-	@Inject
-	private Jornadas jornadas;
+	// @Inject
+	// private Jornadas jornadas;
 
 	@SuppressWarnings("unchecked")
 	public List<Horario> filtrados(HorarioFilter filtro) {
@@ -40,7 +39,7 @@ public class Horarios implements Serializable {
 
 	public Horario porId(Long id) {
 		// Session session = em.unwrap(Session.class);
-		return (Horario) session.get(Horario.class, id);
+		return session.get(Horario.class, id);
 	}
 
 	public Horario guardar(Horario horario) {
@@ -81,9 +80,9 @@ public class Horarios implements Serializable {
 		try {
 			horarioSelecionado = porId(horarioSelecionado.getId());
 			// Session session = em.unwrap(Session.class);
-			//session.getTransaction().begin();
+			// session.getTransaction().begin();
 			session.delete(horarioSelecionado);
-			//session.getTransaction().commit();
+			// session.getTransaction().commit();
 
 		} catch (Exception e) {
 			throw new NegocioException("Horario nao pode ser excluido");
@@ -91,12 +90,14 @@ public class Horarios implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Horario> carregarListaHorarios() {
 		// Session session = em.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(Horario.class);
 		return criteria.addOrder(Order.asc("horario")).list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<HorarioJornada> carregarHorarioJornada(Long id) {
 		// Session session = em.unwrap(Session.class);
 		return session.createQuery("from HorarioJornada where horario_id = :id order by horario_id,seq")
@@ -120,7 +121,7 @@ public class Horarios implements Serializable {
 		//
 		//
 		try {
-			int seq = 1;
+			// int seq = 1;
 			// Session session = em.unwrap(Session.class);
 			session.createQuery("delete from HorarioJornada where horario_id = :id").setParameter("id", id)
 					.executeUpdate();
@@ -139,10 +140,10 @@ public class Horarios implements Serializable {
 			// Session session = em.unwrap(Session.class);
 			for (Jornada lista : listaJornada) {
 
-				//session.getTransaction().begin();
+				// session.getTransaction().begin();
 				session.createSQLQuery(insertSql).setParameter("hor_id", id).setParameter("jor_id", lista.getId())
 						.setParameter("seq", seq).executeUpdate();
-				//session.getTransaction().commit();
+				// session.getTransaction().commit();
 				session.flush();
 				seq += 1;
 			}
