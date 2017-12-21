@@ -74,6 +74,7 @@ public class Folgas implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Folga> carregarListaAfastamentos() {
 		return session.createQuery("from Folga").list();
 	}

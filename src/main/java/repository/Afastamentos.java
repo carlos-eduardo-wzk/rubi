@@ -94,6 +94,7 @@ public class Afastamentos implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Afastamento> carregarListaAfastamentos() {
 		return session.createQuery("from Afastamento").list();
 	}
@@ -103,6 +104,7 @@ public class Afastamentos implements Serializable {
 		try {
 			String jpql = "select a from Afastamento a inner join fetch a.colaborador where  a.colaborador.pis = :colaborador_id  "
 					+ "  and (a.dataAfastamentoIni <= :dia and a.dataAfastamentoFim >= :dia )  ";
+			@SuppressWarnings("unused")
 			Afastamento resultado = (Afastamento) session.createQuery(jpql).setParameter("pis", pis)
 					.setParameter("dia", dia).uniqueResult();
 			return true;

@@ -66,6 +66,7 @@ public class Cargos implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Cargo> carregarListaCargos() {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Cargo").list();

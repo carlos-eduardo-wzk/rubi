@@ -1,14 +1,14 @@
 package repository;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+
+import org.hibernate.Session;
 
 import model.Acerto;
 import model.AcertoAbono;
@@ -18,8 +18,6 @@ import model.Ocorrencia;
 import model.OcorrenciaApurada;
 import model.TipoDia;
 import model.TipoOcorrencia;
-
-import org.hibernate.Session;
 
 public class OcorrenciaApuradas implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -247,6 +245,7 @@ public class OcorrenciaApuradas implements Serializable {
 		  + " and data = :dia and colaborador_id =:cola ";
 		
 
+		@SuppressWarnings("unchecked")
 		List<Object[]> resultado =  session.createSQLQuery(jpql)
 				.setParameter("dia", dia)
 				.setParameter("cola", cola)

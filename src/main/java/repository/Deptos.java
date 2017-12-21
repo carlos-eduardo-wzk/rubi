@@ -60,6 +60,7 @@ public class Deptos implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Depto> carregarListaDeptos() {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Depto").list();

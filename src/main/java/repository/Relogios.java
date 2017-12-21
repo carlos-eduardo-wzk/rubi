@@ -65,6 +65,7 @@ public class Relogios implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Relogio> carregarListaRelogios() {
 		return session.createQuery("from Relogio")
 				.list();

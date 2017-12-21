@@ -60,6 +60,7 @@ public class Filiais implements Serializable {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public List<Filial> carregarListaFiliais() {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Filial").list();

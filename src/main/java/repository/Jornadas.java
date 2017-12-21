@@ -68,6 +68,7 @@ public class Jornadas implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Jornada> porNome(String nome) {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Jornada where upper(jornada) like :nome")

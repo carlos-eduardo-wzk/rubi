@@ -85,6 +85,7 @@ public class Normas implements Serializable {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Norma> carregarListaNormas() {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Norma").list();

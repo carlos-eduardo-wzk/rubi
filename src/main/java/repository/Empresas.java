@@ -63,12 +63,14 @@ public class Empresas implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Empresa> carregarListaColaboradores() {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Empresa").list();
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Empresa> carregarListaEmpresas() {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from Empresa").list();

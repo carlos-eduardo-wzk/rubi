@@ -1,7 +1,6 @@
 package repository;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,11 +15,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import filter.HorarioColaboradorFilter;
-import model.Feriado;
 import model.HorarioColaborador;
 import model.HorarioColaboradorPK;
 import service.NegocioException;
-
 
 @Stateless
 public class HorarioColaboradores implements Serializable {
@@ -29,7 +26,6 @@ public class HorarioColaboradores implements Serializable {
 
 	@PersistenceContext(unitName = "safiraPU")
 	private EntityManager em;
-	
 
 	@SuppressWarnings("unchecked")
 	public List<HorarioColaborador> filtrados(HorarioColaboradorFilter filtro) {
@@ -45,15 +41,14 @@ public class HorarioColaboradores implements Serializable {
 	}
 
 	public HorarioColaborador guardar(HorarioColaborador horarioColaborador) {
-		
+
 		HorarioColaborador horacol = new HorarioColaborador();
 		Session session = em.unwrap(Session.class);
 		session.getTransaction().begin();
-		horacol =   (HorarioColaborador) session.merge(horarioColaborador);
+		horacol = (HorarioColaborador) session.merge(horarioColaborador);
 		session.getTransaction().commit();
-		return horacol;		
-	
-		
+		return horacol;
+
 	}
 
 	@Transactional
@@ -63,47 +58,38 @@ public class HorarioColaboradores implements Serializable {
 			Session session = em.unwrap(Session.class);
 
 			// crio pelo construtor a chave primaria
-			HorarioColaboradorPK hcpk = new HorarioColaboradorPK(
-					horarioColaboradorSelecionado.getColaborador(),
-					horarioColaboradorSelecionado.getHorario(),
-					horarioColaboradorSelecionado.getDataInicio());
+			HorarioColaboradorPK hcpk = new HorarioColaboradorPK(horarioColaboradorSelecionado.getColaborador(),
+					horarioColaboradorSelecionado.getHorario(), horarioColaboradorSelecionado.getDataInicio());
 			// acho o registro
-			HorarioColaborador hc = (HorarioColaborador) session.get(
-					HorarioColaborador.class, hcpk);
-			
+			HorarioColaborador hc = (HorarioColaborador) session.get(HorarioColaborador.class, hcpk);
 
 			session.getTransaction().begin();
-			session.delete(hc);			
+			session.delete(hc);
 			session.getTransaction().commit();
 			session.flush();
-			
-			
+
 		} catch (PersistenceException e) {
-			throw new NegocioException(
-					"Horario Colaborador n�o pode ser excluido");
+			throw new NegocioException("Horario Colaborador n�o pode ser excluido");
 		}
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<HorarioColaborador> carregarListaHorarioColaboradores(Long id) {
 		System.out.println(" carregarListaHorarioColaboradores " + id);
 		Session session = em.unwrap(Session.class);
-		return session
-				.createQuery(
-						"from HorarioColaborador where Colaborador_id = :idcola ").setParameter("idcola", id)
+		return session.createQuery("from HorarioColaborador where Colaborador_id = :idcola ").setParameter("idcola", id)
 				.list();
 	}
 
-	
 	public HorarioColaborador porColaboradorHorario(Long colaid, Long horaid) {
 		Session session = em.unwrap(Session.class);
-		HorarioColaborador hc = (HorarioColaborador)
-				 session.createQuery("from HorarioColaborador where colaborador_id = :colaborador_id and horario_id=:horario_id")
-				.setParameter("colaborador_id", colaid)
-				.setParameter("horario_id", horaid).uniqueResult();
+		HorarioColaborador hc = (HorarioColaborador) session
+				.createQuery(
+						"from HorarioColaborador where colaborador_id = :colaborador_id and horario_id=:horario_id")
+				.setParameter("colaborador_id", colaid).setParameter("horario_id", horaid).uniqueResult();
 		return hc;
 
-	}	
-	
-	
+	}
+
 }

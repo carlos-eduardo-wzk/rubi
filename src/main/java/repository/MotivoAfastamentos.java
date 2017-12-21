@@ -64,6 +64,7 @@ public class MotivoAfastamentos implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<MotivoAfastamento> carregarListaMotivoAfastamento() {
 		return session.createQuery("from MotivoAfastamento").list();
 

@@ -4,17 +4,16 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.persistence.PersistenceContext;
-
-import model.HorarioColaborador;
-import model.Marcacao;
-import model.MarcacaoProcessada;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+import model.HorarioColaborador;
+import model.Marcacao;
+import model.MarcacaoProcessada;
 
 public class Marcacoes implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -93,6 +92,7 @@ public class Marcacoes implements Serializable {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Marcacao> marcacaoDoDia(Date dia) {
 		return session
 				.createQuery(
@@ -152,6 +152,7 @@ public class Marcacoes implements Serializable {
 		
 
 		try {
+			@SuppressWarnings("unchecked")
 			List<Object[]> resultado = session.createSQLQuery(jpql)
 					.setParameter("dia", dia)
 					.setParameter("horario", hc.getHorario()).list();
@@ -240,6 +241,7 @@ public class Marcacoes implements Serializable {
 		
 
 		try {
+			@SuppressWarnings("unchecked")
 			List<Object[]> resultado = session.createSQLQuery(jpql)
 					.setParameter("dia", dia)
 					.setParameter("horario", hc.getHorario()).list();

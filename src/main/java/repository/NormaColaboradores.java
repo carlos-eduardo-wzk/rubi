@@ -73,6 +73,7 @@ public class NormaColaboradores implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<NormaColaborador> carregarListaNormaColaboradores(Long id) {
 		Session session = em.unwrap(Session.class);
 		return session.createQuery("from NormaColaborador where Colaborador_id = :idcola ").setParameter("idcola", id)

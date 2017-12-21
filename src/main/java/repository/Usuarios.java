@@ -38,7 +38,6 @@ public class Usuarios implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-
 	public List<Usuario> filtrados(UsuarioFilter filtro) {
 		//Session session = em.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(Usuario.class)
@@ -77,6 +76,7 @@ public class Usuarios implements Serializable {
 		return usuario;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Usuario> Usuarios() {
 		//Session session = em.unwrap(Session.class);
 		return session.createQuery("from Usuario").list();

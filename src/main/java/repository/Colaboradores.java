@@ -137,6 +137,7 @@ public class Colaboradores implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Colaborador> porNome(String nome) {
 		Session session = em.unwrap(Session.class);
 		return session
@@ -145,6 +146,7 @@ public class Colaboradores implements Serializable {
 				.setParameter("nome", "%" + nome.toUpperCase() + "%").list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Colaborador> porMatricula(String mat) {
 		Session session = em.unwrap(Session.class);
 		return session
@@ -154,6 +156,7 @@ public class Colaboradores implements Serializable {
 				.setParameter("mat", "%" + mat + "%").list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Colaborador> porPis2(String pis) {
 		Session session = em.unwrap(Session.class);
 		return session
@@ -172,6 +175,7 @@ public class Colaboradores implements Serializable {
 		return (Colaborador) criteria.uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Colaborador> findAll() {
 		Session session = em.unwrap(Session.class);
 		return (List<Colaborador>) session.createQuery("from Colaborador")
