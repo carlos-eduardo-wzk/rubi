@@ -4,13 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
-
-import model.MotivoAbono;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -18,8 +14,9 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import service.NegocioException;
 import filter.MotivoAbonoFilter;
+import model.MotivoAbono;
+import service.NegocioException;
 
 @Stateless
 public class MotivoAbonos implements Serializable {
