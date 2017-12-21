@@ -714,10 +714,12 @@ public class ProcessaMarcacoes implements Serializable {
 
 	}// ProcessaMarcacaoPeriodo
 
+	@SuppressWarnings("unchecked")
 	public List<Object[]> carregaHorarioAfastamentoFolga(Date dia,
 			Long colaborador) {
 
 		// mysql
+		@SuppressWarnings("unused")
 		String jpql = " select h2.horario_id, h.horario, data_base, h2.jornada_id, tipoRegime, e1, s1, e2, s2, seq, fechamento, hc.colaborador_id , "
 				+ " tole1ant ,tole1dep, tole2ant ,tole2dep, tole3ant ,tole3dep, tole4ant ,tole4dep, tole5ant ,tole5dep, tole6ant ,tole6dep, tole7ant ,tole7dep, tole8ant ,tole8dep,"
 				+ " preassinaladoe2,preassinalados1 ,"
@@ -885,6 +887,7 @@ public class ProcessaMarcacoes implements Serializable {
 
 		String jpql = " select * from marcacaoDetalhe where colaborador_id = :cola and data = :dia and (tipo <> 'D' or tipo is null)  order by data , hora ";
 
+		@SuppressWarnings("unchecked")
 		List<Object[]> lista = session.createSQLQuery(jpql)
 				.setParameter("dia", dia).setParameter("cola", colaborador)
 				.list();

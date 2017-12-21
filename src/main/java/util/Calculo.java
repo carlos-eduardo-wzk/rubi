@@ -208,7 +208,9 @@ public class Calculo implements Serializable {
 		Integer feriado;
 		Integer[] descontaatrasodahe = { 0 };
 
+		@SuppressWarnings("unused")
 		Boolean Hora1440;
+		@SuppressWarnings("unused")
 		int QtdHsRefeicao, AfastCred, DifHora, QtdHsDia, QtdHsHorario, H_Extras, AdNoturno, Credito, Debito, CredAutorizado, DebAutorizado, Diverge, AdNoturno_Ini, AdNoturno_fim, auxE1, auxS1, auxE2, auxS2, auxHE1, auxHS1, auxHE2, auxHS2, auxatraso, hntole;
 
 		auxE1 = E1;
