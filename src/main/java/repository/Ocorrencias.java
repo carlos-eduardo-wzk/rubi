@@ -68,6 +68,7 @@ public class Ocorrencias implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Ocorrencia> carregarListaOcorrencia() {
 		Session session = em.unwrap(Session.class);
 		return  (List<Ocorrencia>) session.createQuery("from Ocorrencia order by ocorrencia")
