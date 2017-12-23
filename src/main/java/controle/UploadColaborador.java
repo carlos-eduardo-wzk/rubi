@@ -346,6 +346,10 @@ public class UploadColaborador implements Serializable {
 		// } catch (IOException e) {
 		// e.printStackTrace();
 		// }
+		
+		System.out.println("caminho " +  caminho + "/"
+						+ nomeArquivo  );
+		System.out.println(nomeArquivo);
 
 		if (csv == true) {
 			try {
