@@ -349,14 +349,13 @@ public class UploadColaborador implements Serializable {
 		
 		System.out.println("caminho " +  caminho + "/"
 						+ nomeArquivo  );
-		System.out.println(nomeArquivo);
+		//	System.out.println(nomeArquivo);
 
 		if (csv == true) {
 			try {
 				br = new BufferedReader(new FileReader(caminho + "/"
 						+ nomeArquivo));
 
-	//			while ((line = br.readLine()) != null) {
 					try {
 
 						while ((line = br.readLine()) != null) {
@@ -402,8 +401,10 @@ public class UploadColaborador implements Serializable {
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				System.out.println(e.getMessage());
 			} catch (IOException e) {
 				e.printStackTrace();
+				 System.out.println(e.getMessage() );
 			} finally {
 				if (br != null) {
 					try {
