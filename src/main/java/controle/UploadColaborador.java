@@ -347,8 +347,8 @@ public class UploadColaborador implements Serializable {
 		// e.printStackTrace();
 		// }
 		
-		System.out.println("caminho " +  caminho + "/"
-						+ nomeArquivo  );
+	//	System.out.println("caminho " +  caminho + "/"
+		//				+ nomeArquivo  );
 		//	System.out.println(nomeArquivo);
 
 		if (csv == true) {
