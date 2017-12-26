@@ -327,7 +327,7 @@ public class UploadColaborador implements Serializable {
 		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
 		Colaborador cola = new Colaborador();
 		
-
+		
 		// try {
 		// File targetFolder = new File(caminho);
 		// nomeArquivo = event.getFile().getFileName();
