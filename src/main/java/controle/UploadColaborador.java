@@ -356,6 +356,7 @@ public class UploadColaborador implements Serializable {
 		//	System.out.println(nomeArquivo);
 
 		if (csv == true) {
+			System.out.println("  C S V ");
 			try {
 				br = new BufferedReader(new FileReader("/opt/app-root/src/src/main/webapp/WEB-INF" + "/"
 						+ nomeArquivo));
@@ -421,6 +422,7 @@ public class UploadColaborador implements Serializable {
 		} else // se nao é csv
 		{
 			try {
+				System.out.println(" TXT ");
 				br = new BufferedReader(new FileReader(caminho + "/"
 						+ nomeArquivo));
 
