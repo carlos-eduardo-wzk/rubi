@@ -328,6 +328,10 @@ public class UploadColaborador implements Serializable {
 		Colaborador cola = new Colaborador();
 		
 		
+		System.out.println(" >>>>> " + caminho + "/"
+						+ nomeArquivo);
+		
+		
 		// try {
 		// File targetFolder = new File(caminho);
 		// nomeArquivo = event.getFile().getFileName();
@@ -353,7 +357,7 @@ public class UploadColaborador implements Serializable {
 
 		if (csv == true) {
 			try {
-				br = new BufferedReader(new FileReader(caminho + "/"
+				br = new BufferedReader(new FileReader("/opt/app-root/src/src/main/webapp/WEB-INF" + "/"
 						+ nomeArquivo));
 
 					try {
