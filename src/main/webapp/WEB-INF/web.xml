@@ -55,7 +55,7 @@
 
 	<context-param>
 		<param-name>primefaces.UPLOADER</param-name>
-		<param-value>auto|native|commons</param-value>
+		<param-value>native</param-value>
 	</context-param>
 
 

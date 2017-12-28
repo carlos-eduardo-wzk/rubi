@@ -338,8 +338,7 @@ public class UploadColaborador implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
         // write the inputStream to a FileOutputStream
       
-        //OutputStream out = new FileOutputStream(new File(destination + fileName));
-        
+     
         System.out.println(" ----" + event.getFile().getFileName() );
         
         String nomeArquivo = event.getFile().getFileName();
