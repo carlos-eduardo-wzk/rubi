@@ -53,10 +53,15 @@
 	</servlet-mapping>
 
 
+
+
 	<context-param>
 		<param-name>primefaces.UPLOADER</param-name>
-		<param-value>native</param-value>
+		<param-value>auto|native|commons</param-value>
 	</context-param>
 
+
+	
+	
 
 </web-app>

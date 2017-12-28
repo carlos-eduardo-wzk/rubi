@@ -360,10 +360,19 @@ public class UploadColaborador implements Serializable {
 			System.out.println("  C S V ");
 			try {
 				
-			   FileReader fr =	new FileReader(caminho + "/" + nomeArquivo  );
+			   FileReader fr = null;
+			   br = new BufferedReader(fr);
+			try {
+				fr = new FileReader(caminho + "/" + nomeArquivo  );
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				System.out.println(e1.getMessage());
+				System.out.println(e1.getCause());
+			}
 			  
 			   
-				br = new BufferedReader(fr);
+				
 
 					try {
 
