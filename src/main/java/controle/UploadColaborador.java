@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -36,12 +37,19 @@ import repository.Filiais;
 import util.jsf.FacesUtil;
 
 @Named
+@ManagedBean
 @ViewScoped
 public class UploadColaborador implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private UploadedFile file;
+	
+	
+
+	public UploadColaborador() {
+	}
+
 
 	@Inject
 	private Colaboradores colaboradores;
@@ -346,11 +354,12 @@ public class UploadColaborador implements Serializable {
 		
 		
 		
+		
+		
 		if (csv == true) {
 			System.out.println("  C S V ");
 			try {
-				br = new BufferedReader(new FileReader("/opt/app-root/src/src/main/webapp/WEB-INF" + "/"
-						+ nomeArquivo));
+				br = new BufferedReader(new FileReader(event.getFile().getFileName()));
 
 					try {
 
