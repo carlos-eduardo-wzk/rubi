@@ -330,9 +330,8 @@ public class UploadColaborador implements Serializable {
         // write the inputStream to a FileOutputStream
       
         //OutputStream out = new FileOutputStream(new File(destination + fileName));
-      
         
-        
+        System.out.println(" ----" + event.getFile().getFileName() );
         
         String nomeArquivo = event.getFile().getFileName();
 		String caminho = "c:/lixo7";
@@ -346,29 +345,7 @@ public class UploadColaborador implements Serializable {
 						+ nomeArquivo);
 		
 		
-		// try {
-		// File targetFolder = new File(caminho);
-		// nomeArquivo = event.getFile().getFileName();
-		// InputStream inputStream = event.getFile().getInputstream();
-		// OutputStream out = new FileOutputStream(new File(targetFolder,
-		// event.getFile().getFileName()));
-		// int read = 0;
-		// byte[] bytes = new byte[1024];
-		//
-		// while ((read = inputStream.read(bytes)) != -1) {
-		// out.write(bytes, 0, read);
-		// }
-		// inputStream.close();
-		// out.flush();
-		// out.close();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 		
-	//	System.out.println("caminho " +  caminho + "/"
-		//				+ nomeArquivo  );
-		//	System.out.println(nomeArquivo);
-
 		if (csv == true) {
 			System.out.println("  C S V ");
 			try {
