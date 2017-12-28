@@ -2,6 +2,7 @@ package controle;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -359,7 +360,11 @@ public class UploadColaborador implements Serializable {
 		if (csv == true) {
 			System.out.println("  C S V ");
 			try {
-				br = new BufferedReader(new FileReader(event.getFile().getFileName()));
+				
+			   FileReader fr =	new FileReader(caminho + "/" + nomeArquivo  );
+			  
+			   
+				br = new BufferedReader(fr);
 
 					try {
 
