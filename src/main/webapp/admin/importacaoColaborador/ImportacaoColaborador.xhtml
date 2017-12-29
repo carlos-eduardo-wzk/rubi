@@ -125,7 +125,7 @@
 
 							<p:outputLabel value="Filial" for="filial"
 								styleClass="rotuloCampo" />
-							<p:selectOneMenu id="filial"  converter="#{filialConverter}"
+							<p:selectOneMenu id="filial" converter="#{filialConverter}"
 								value="#{uploadColaborador.filialSelecionada}"
 								style="width:280px">
 								<f:selectItem itemLabel="Selecione" />
@@ -160,21 +160,42 @@
 								invalidSizeMessage="Tamanho do arquivo inválido"
 								oncomplete="PF('dlgLog').show();" update="dlg repe" />
 						</h:panelGrid>
+
+
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Arquivo: " for="fileUpload" />
+							<p:fileUpload id="fileUpload"
+								fileUploadListener="#{uploadColaborador.handleFileUpload}"
+								update="dataTable" label="Escolher" uploadLabel="Enviar"
+								cancelLabel="Cancelar" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+								invalidFileMessage="São permitidas somente imagens (gif, jpeg, jpg e png)"
+								sizeLimit="102400"
+								invalidSizeMessage="O tamanho máximo permitido é de 1KB."
+								fileLimit="5"
+								fileLimitMessage="Só é possível escolher 5 arquivos por vez."
+								multiple="true" auto="false"
+								onstart="console.log('Iniciando envio de arquivo')"
+								onerror="console.log('Erro na requisição de envio')"
+								oncomplete="console.log('Envio concluído')" />
+						</h:panelGrid>
+
 					</p:panel>
 
 				</p:tab>
 			</p:wizard>
 
-			<p:dialog id="dlg" header="Log da importação - Selecione com mouse para imprimir" widgetVar="dlgLog" modal="true"
-				width="45%" onShow="#{uploadColaborador.carregaLog()}"  >
-							
-							
-				<ui:repeat id="repe" value="#{uploadColaborador.listaLog}" varStatus="status" 
-					var="value">
+			<p:dialog id="dlg"
+				header="Log da importação - Selecione com mouse para imprimir"
+				widgetVar="dlgLog" modal="true" width="45%"
+				onShow="#{uploadColaborador.carregaLog()}">
+
+
+				<ui:repeat id="repe" value="#{uploadColaborador.listaLog}"
+					varStatus="status" var="value">
                       #{status.index + 1 }  #{value} <br />
 				</ui:repeat>
 			</p:dialog>
-		
+
 
 		</h:form>
 

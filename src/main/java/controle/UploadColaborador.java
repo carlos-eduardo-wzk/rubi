@@ -33,7 +33,6 @@ import repository.Empresas;
 import repository.Filiais;
 import util.jsf.FacesUtil;
 
-@Named
 @ManagedBean
 @ViewScoped
 public class UploadColaborador implements Serializable {
