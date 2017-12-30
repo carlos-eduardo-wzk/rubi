@@ -322,31 +322,13 @@ public class UploadColaborador implements Serializable {
 
 	public void handleFileUpload(FileUploadEvent event) {
 		String nomeArquivo = event.getFile().getFileName();
-		String caminho = "c:/lixo";
+		String caminho = "c:/lixo7";
 		BufferedReader br = null;
 		String line = "";
 		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
 		Colaborador cola = new Colaborador();
 		
 
-		// try {
-		// File targetFolder = new File(caminho);
-		// nomeArquivo = event.getFile().getFileName();
-		// InputStream inputStream = event.getFile().getInputstream();
-		// OutputStream out = new FileOutputStream(new File(targetFolder,
-		// event.getFile().getFileName()));
-		// int read = 0;
-		// byte[] bytes = new byte[1024];
-		//
-		// while ((read = inputStream.read(bytes)) != -1) {
-		// out.write(bytes, 0, read);
-		// }
-		// inputStream.close();
-		// out.flush();
-		// out.close();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 
 		if (csv == true) {
 			try {
@@ -529,6 +511,11 @@ public class UploadColaborador implements Serializable {
 		FacesUtil.addInfoMessage("Importação finalizada com sucesso");
 	}// handleFileUpload
 
+	
+	public void handleFileUpload2(FileUploadEvent event) {
+		System.out.println("AAAAAAAAAAAAAAAAAAAAA");
+		System.out.println(event.getFile().getFileName());
+	}
 	
 	public String carregaLog(){
 		
