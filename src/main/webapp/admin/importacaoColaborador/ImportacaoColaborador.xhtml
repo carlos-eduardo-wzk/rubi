@@ -162,22 +162,7 @@
 						</h:panelGrid>
 
 
-						<h:panelGrid columns="2">
-							<p:outputLabel value="Arquivo: " for="fileUpload" />
-							<p:fileUpload id="fileUpload"
-								fileUploadListener="#{uploadColaborador.handleFileUpload}"
-								 update="dlg repe" label="Escolher" uploadLabel="Enviar"
-								cancelLabel="Cancelar" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
-								invalidFileMessage="São permitidas somente imagens (gif, jpeg, jpg e png)"
-								sizeLimit="102400"
-								invalidSizeMessage="O tamanho máximo permitido é de 1KB."
-								fileLimit="5"
-								fileLimitMessage="Só é possível escolher 5 arquivos por vez."
-								multiple="true" auto="false"
-								onstart="console.log('Iniciando envio de arquivo')"
-								onerror="console.log('Erro na requisição de envio')"
-								oncomplete="console.log('Envio concluído')" />
-						</h:panelGrid>
+				
 
 					</p:panel>
 
