@@ -2,9 +2,11 @@ package controle;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,9 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,16 +32,13 @@ import repository.Empresas;
 import repository.Filiais;
 import util.jsf.FacesUtil;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class UploadColaborador implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private UploadedFile file;
-
-	public UploadColaborador() {
-	}
 
 	@Inject
 	private Colaboradores colaboradores;
@@ -86,7 +82,7 @@ public class UploadColaborador implements Serializable {
 
 	private Integer posData = 89;
 	private Integer tamData = 8;
-
+	
 	List<String> listaLog = new ArrayList<String>();
 
 	public List<String> getListaLog() {
@@ -325,78 +321,90 @@ public class UploadColaborador implements Serializable {
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-
-		FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-		// write the inputStream to a FileOutputStream
-
-		System.out.println(" ----" + event.getFile().getFileName());
-
 		String nomeArquivo = event.getFile().getFileName();
-		String caminho = "c:/lixo7";
+		String caminho = "c:/lixo";
 		BufferedReader br = null;
 		String line = "";
 		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
 		Colaborador cola = new Colaborador();
+		
 
-		System.out.println(" >>>>> " + caminho + "/" + nomeArquivo);
+		// try {
+		// File targetFolder = new File(caminho);
+		// nomeArquivo = event.getFile().getFileName();
+		// InputStream inputStream = event.getFile().getInputstream();
+		// OutputStream out = new FileOutputStream(new File(targetFolder,
+		// event.getFile().getFileName()));
+		// int read = 0;
+		// byte[] bytes = new byte[1024];
+		//
+		// while ((read = inputStream.read(bytes)) != -1) {
+		// out.write(bytes, 0, read);
+		// }
+		// inputStream.close();
+		// out.flush();
+		// out.close();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 		if (csv == true) {
-			System.out.println("  C S V ");
 			try {
+				br = new BufferedReader(new FileReader(caminho + "/"
+						+ nomeArquivo));
 
-				FileReader fr = null;
-				br = new BufferedReader(fr);
-				try {
-					fr = new FileReader(caminho + "/" + nomeArquivo);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					System.out.println(e1.getMessage());
-					System.out.println(e1.getCause());
-				}
+				File file = new File(caminho, "/" + nomeArquivo);
+				FileInputStream inStream = new FileInputStream(file);
+				 br = new BufferedReader(new InputStreamReader(inStream));
 
-				try {
+			
+				
+				
+	//			while ((line = br.readLine()) != null) {
+					try {
 
-					while ((line = br.readLine()) != null) {
+						while ((line = br.readLine()) != null) {
 
-						cola = new Colaborador();
-						// "," ou ";" de acordo com o arquivo
-						String[] row = line.split(";");
-						System.out.println(row[0] + " - " + row[1] + " - " + row[2] + " - " + row[3] + " - " + row[4]
-								+ " - " + row[5]);
-
-						cola.setNome(row[0]);
-						cola.setPis(row[1]);
-						cola.setMatricula(row[2]);
-						cola.setCtps(row[3]);
-						cola.setCtpsSerie(row[4]);
-						cola.setEmpresa(empresaSelecionada);
-						cola.setFilial(filialSelecionada);
-						cola.setDepto(deptoSelecionada);
-
-						try {
-							DateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-
-							System.out.println("Data " + row[5]);
-
-							Date date = (Date) formatter.parse(row[5]);
-							cola.setDataAdmissao(date);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 							cola = new Colaborador();
-							continue;
-						}
+							// "," ou ";" de acordo com o arquivo
+							String[] row = line.split(";");
+							System.out.println(row[0] + " - " + row[1] + " - "
+									+ row[2] + " - " + row[3] + " - " + row[4]
+									+ " - " + row[5]);
 
-						lstColaborador.add(cola);
-						cola = new Colaborador();
-					} // while
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-				}
-				// } // while
+							cola.setNome(row[0]);
+							cola.setPis(row[1]);
+							cola.setMatricula(row[2]);
+							cola.setCtps(row[3]);
+							cola.setCtpsSerie(row[4]);
+							cola.setEmpresa(empresaSelecionada);
+							cola.setFilial(filialSelecionada);
+							cola.setDepto(deptoSelecionada);
 
+							try {
+								DateFormat formatter = new SimpleDateFormat(
+										"dd/MM/yyyy");
+								Date date = (Date) formatter.parse(row[5]);
+								cola.setDataAdmissao(date);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								cola = new Colaborador();
+								continue;
+							}
+
+							lstColaborador.add(cola);
+							cola = new Colaborador();
+						}// while
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+			//	} // while
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			} finally {
 				if (br != null) {
 					try {
@@ -405,12 +413,12 @@ public class UploadColaborador implements Serializable {
 						e.printStackTrace();
 					}
 				}
-			} // try
+			}// try
 		} else // se nao é csv
 		{
 			try {
-				System.out.println(" TXT ");
-				br = new BufferedReader(new FileReader(caminho + "/" + nomeArquivo));
+				br = new BufferedReader(new FileReader(caminho + "/"
+						+ nomeArquivo));
 
 				try {
 
@@ -418,38 +426,57 @@ public class UploadColaborador implements Serializable {
 
 						cola = new Colaborador();
 
-						System.out.println("Nome " + line.substring(posNome - 1, posNome + tamNome - 1));
-						System.out.println("PIS " + line.substring(posPIS - 1, posPIS + tamPIS - 1));
-						System.out.println("Mat " + line.substring(posMat - 1, posMat + tamMat - 1));
-						System.out.println("CTPS " + line.substring(posCTPS - 1, posCTPS + tamCTPS - 1));
-						System.out.println(
-								"CTPS Serie " + line.substring(posCTPSSerie - 1, posCTPSSerie + tamCTPSSerie - 1));
-						System.out.println("Data " + line.substring(posData - 1, posData + tamData - 1));
+						System.out.println("Nome "
+								+ line.substring(posNome - 1, posNome + tamNome
+										- 1));
+						System.out.println("PIS "
+								+ line.substring(posPIS - 1, posPIS + tamPIS
+										- 1));
+						System.out.println("Mat "
+								+ line.substring(posMat - 1, posMat + tamMat
+										- 1));
+						System.out.println("CTPS "
+								+ line.substring(posCTPS - 1, posCTPS + tamCTPS
+										- 1));
+						System.out.println("CTPS Serie "
+								+ line.substring(posCTPSSerie - 1, posCTPSSerie
+										+ tamCTPSSerie - 1));
+						System.out.println("Data "
+								+ line.substring(posData - 1, posData + tamData
+										- 1));
 
-						cola.setNome(line.substring(posNome - 1, tamNome + posNome - 1));
-						cola.setPis(line.substring(posPIS - 1, posPIS + tamPIS - 1));
-						cola.setMatricula(line.substring(posMat - 1, posMat + tamMat - 1));
-						cola.setCtps(line.substring(posCTPS - 1, posCTPS + tamCTPS - 1));
-						cola.setCtpsSerie(line.substring(posCTPSSerie - 1, posCTPSSerie + tamCTPSSerie - 1));
+						cola.setNome(line.substring(posNome - 1, tamNome
+								+ posNome - 1));
+						cola.setPis(line.substring(posPIS - 1, posPIS + tamPIS
+								- 1));
+						cola.setMatricula(line.substring(posMat - 1, posMat
+								+ tamMat - 1));
+						cola.setCtps(line.substring(posCTPS - 1, posCTPS
+								+ tamCTPS - 1));
+						cola.setCtpsSerie(line.substring(posCTPSSerie - 1,
+								posCTPSSerie + tamCTPSSerie - 1));
 						cola.setEmpresa(empresaSelecionada);
 						cola.setFilial(filialSelecionada);
 						cola.setDepto(deptoSelecionada);
 
 						try {
-							DateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-							Date date = (Date) formatter.parse(line.substring(posData - 1, posData + tamData - 1));
+							DateFormat formatter = new SimpleDateFormat(
+									"ddMMyyyy");
+							Date date = (Date) formatter.parse(line.substring(
+									posData - 1, posData + tamData - 1));
 							cola.setDataAdmissao(date);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							listaLog.add("Data invalida " + line.substring(posData - 1, posData + tamData - 1));
+							listaLog.add("Data invalida " + line.substring(
+									posData - 1, posData + tamData - 1) );
 							cola = new Colaborador();
 							continue;
 						}
 
 						lstColaborador.add(cola);
 						cola = new Colaborador();
-					} // while
+					}// while
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
@@ -466,9 +493,9 @@ public class UploadColaborador implements Serializable {
 						e.printStackTrace();
 					}
 				}
-			} // try
+			}// try
 
-		} // nao csv
+		}// nao csv
 
 		for (Colaborador c : lstColaborador) {
 
@@ -481,17 +508,17 @@ public class UploadColaborador implements Serializable {
 					System.out.println("Guarda cola " + c.getNome());
 					colaboradores.guardar(c);
 				} else {
-					listaLog.add("Colaborador já cadastradado : PIS " + cola.getPis() + "  -  Nome " + cola.getNome());
+					listaLog.add("Colaborador já cadastradado : PIS " + cola.getPis() + "  -  Nome " + cola.getNome() );
 				}
 
 			} else {
-				listaLog.add("Pis não encontrado, nulo");
+				listaLog.add("Pis não encontrado, nulo" );
 			}
 
-		} // for
+		}// for
 
 		System.out.println("LISTA " + listaLog.size());
-		for (int i = 0; i < listaLog.size(); i++) {
+		for(int i=0;i<listaLog.size();i++){
 			System.out.println(listaLog.get(i));
 		}
 
@@ -502,14 +529,16 @@ public class UploadColaborador implements Serializable {
 		FacesUtil.addInfoMessage("Importação finalizada com sucesso");
 	}// handleFileUpload
 
-	public String carregaLog() {
-
-		System.out.println("Carrega Log rotina ");
+	
+	public String carregaLog(){
+		
+		System.out.println("Carrega Log rotina "  );
 		System.out.println(listaLog.size());
-		for (String s : listaLog) {
+		for(String s : listaLog){
 			System.out.println(s);
 		}
 		return "";
 	}
-
+	
+	
 }
