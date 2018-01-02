@@ -27,7 +27,7 @@
 	<beans:bean id="jsfRedirectStrategy" class="security.JsfRedirectStrategy" />
 
 
-    <http pattern="/**" security="none" />
+  
 
 	<http pattern="/login.xhtml" security="none" />
 	<http pattern="/erro.xhtml" security="none" />

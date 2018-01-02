@@ -525,8 +525,10 @@ public class UploadColaborador implements Serializable {
 		
 
 		try {
+			System.out.println("antes do FileReader  ");
 			br = new BufferedReader(new FileReader("/lixo7/funcsafira.csv"));
 		} catch (FileNotFoundException e) {
+			System.out.println("erro importacao......");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getMessage());
