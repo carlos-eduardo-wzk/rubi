@@ -513,7 +513,7 @@ public class UploadColaborador implements Serializable {
 
 	
 	public void handleFileUpload2(FileUploadEvent event) {
-		System.out.println("AAAAAAAAAAAAAAAAAAAAA");
+		System.out.println("BBBBBBBBBBBB");
 		System.out.println(event.getFile().getFileName());
 		
 		String nomeArquivo = event.getFile().getFileName();
