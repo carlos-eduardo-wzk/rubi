@@ -515,6 +515,27 @@ public class UploadColaborador implements Serializable {
 	public void handleFileUpload2(FileUploadEvent event) {
 		System.out.println("AAAAAAAAAAAAAAAAAAAAA");
 		System.out.println(event.getFile().getFileName());
+		
+		String nomeArquivo = event.getFile().getFileName();
+		String caminho = "c:/lixo7";
+		BufferedReader br = null;
+		String line = "";
+		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
+		Colaborador cola = new Colaborador();
+		
+
+		try {
+			br = new BufferedReader(new FileReader(caminho + "/"
+					+ nomeArquivo));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
+		
+		
+		
 	}
 	
 	public String carregaLog(){

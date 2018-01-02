@@ -153,10 +153,13 @@
 						<h:panelGrid columns="2" columnClasses="label, value">
 							<p:fileUpload mode="advanced"
 								fileUploadListener="#{uploadColaborador.handleFileUpload2}"
-								allowTypes="/(\.|\/)(txt|csv)$/" auto="true"
-								uploadLabel="Selecione" cancelLabel="cancela"
+								allowTypes="/(\.|\/)(txt|csv)$/" 
+								auto="true"
+								uploadLabel="Selecione" 
+								cancelLabel="cancela"
 								label="clique aqui para selecionar o arquivo"
-								sizeLimit="1000000" fileLimit="3"
+								sizeLimit="1000000" 
+								fileLimit="3"
 								invalidSizeMessage="Tamanho do arquivo inválido"
 								oncomplete="PF('dlgLog').show();" update="dlg repe" />
 						</h:panelGrid>
