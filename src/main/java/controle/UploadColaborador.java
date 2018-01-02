@@ -513,7 +513,7 @@ public class UploadColaborador implements Serializable {
 
 	
 	public void handleFileUpload2(FileUploadEvent event) {
-		System.out.println("DDDDD");
+		System.out.println("EEE");
 		System.out.println(event.getFile().getFileName());
 		
 		String nomeArquivo = event.getFile().getFileName();
@@ -525,7 +525,7 @@ public class UploadColaborador implements Serializable {
 		
 
 		try {
-			br = new BufferedReader(new FileReader("c:\\lixo7\\funcsafira.csv"));
+			br = new BufferedReader(new FileReader("/lixo7/funcsafira.csv"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
