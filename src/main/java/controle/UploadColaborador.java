@@ -523,15 +523,19 @@ public class UploadColaborador implements Serializable {
 		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
 		Colaborador cola = new Colaborador();
 		
+		
+		
 
 		try {
 			System.out.println("antes do FileReader  ");
-			br = new BufferedReader(new FileReader("/lixo7/funcsafira.csv"));
+			br = new BufferedReader(new FileReader("c:/lixo7/funcsafira.csv"));
+			System.out.println(" depois de FileRead");
 		} catch (FileNotFoundException e) {
 			System.out.println("erro importacao......");
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			e.printStackTrace();
+			
 		}
 
 		
