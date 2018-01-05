@@ -4,10 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -513,8 +517,78 @@ public class UploadColaborador implements Serializable {
 
 	
 	public void handleFileUpload2(FileUploadEvent event) {
+		
+		
+		//source = new File("C:\\Users\\nikos7\\Desktop\\files\\sourcefile3.txt");
+		
+		        //dest = new File("C:\\Users\\nikos7\\Desktop\\files\\destfile3.txt");		
+		        //start = System.nanoTime();		
+		        //copyFileUsingJava7Files(source, dest);		
+		        //end = System.nanoTime();		
+		        //System.out.println("Time taken by Java7 Files Copy = " + (end - start));
+		
+		 
+		//File dest = new File("/usr/tmp/arquivo.csv");	
+		
+
+		
+		        InputStream input = null;		
+		        OutputStream output = null;
+		
+		        try {
+		
+		            try {
+						input = new FileInputStream(event.getFile().getFileName());
+						System.out.println("11111");
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		            try {
+						output = new FileOutputStream("/usr/tmp/arquivo.csv");
+						System.out.println("22222");
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		            byte[] buf = new byte[1024];
+		
+		            int bytesRead;
+		
+		            try {
+						while ((bytesRead = input.read(buf)) > 0) {		
+						    output.write(buf, 0, bytesRead);		
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		        } finally {
+		
+		            try {
+						input.close();
+						System.out.println("3333");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}		
+		            try {
+						output.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		        }
+
+		
 		System.out.println("EEE");
-		System.out.println(event.getFile().getFileName());
+		//System.out.println(event.getFile().getFileName());
+		
+		
 		
 		String nomeArquivo = event.getFile().getFileName();
 		String caminho = "c:/lixo7";
@@ -528,18 +602,27 @@ public class UploadColaborador implements Serializable {
 
 		try {
 			System.out.println("antes do FileReader  ");
-			br = new BufferedReader(new FileReader("c:/lixo7/funcsafira.csv"));
+			br = new BufferedReader(new FileReader("/usr/tmp/arquivo.csv"));
+		    //br = new BufferedReader(new FileReader((File) event.getFile()));
+			
 			System.out.println(" depois de FileRead");
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			System.out.println("erro importacao......");
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 			
 		}
-
-		
-		
+		finally {
+			          try {
+			                br.close();
+			            }
+			
+			            catch (IOException ex) {
+			                System.err.println("An IOException was caught!");
+			                ex.printStackTrace();		
+			            }
+		        }     
 		
 	}
 	
