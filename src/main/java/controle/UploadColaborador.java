@@ -370,7 +370,7 @@ public class UploadColaborador implements Serializable {
 						cola.setDepto(deptoSelecionada);
 
 						try {
-							DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+							DateFormat formatter = new SimpleDateFormat("ddMMyyyy");
 							Date date = (Date) formatter.parse(row[5]);
 							cola.setDataAdmissao(date);
 						} catch (Exception e) {
