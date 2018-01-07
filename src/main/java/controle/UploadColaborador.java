@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.io.FilenameUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -86,7 +90,7 @@ public class UploadColaborador implements Serializable {
 
 	private Integer posData = 89;
 	private Integer tamData = 8;
-	
+
 	List<String> listaLog = new ArrayList<String>();
 
 	public List<String> getListaLog() {
@@ -324,68 +328,65 @@ public class UploadColaborador implements Serializable {
 		this.filialSelecionada = filialSelecionada;
 	}
 
-	public void handleFileUpload(FileUploadEvent event) {
+	public void handleFileUpload2(FileUploadEvent event) {
 		String nomeArquivo = event.getFile().getFileName();
 		String caminho = "c:/lixo7";
 		BufferedReader br = null;
 		String line = "";
 		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
 		Colaborador cola = new Colaborador();
-		
-
 
 		if (csv == true) {
 			try {
-				br = new BufferedReader(new FileReader(caminho + "/"
-						+ nomeArquivo));
+				//br = new BufferedReader(new FileReader(caminho + "/" + nomeArquivo));
 
-				File file = new File(caminho, "/" + nomeArquivo);
-				FileInputStream inStream = new FileInputStream(file);
-				 br = new BufferedReader(new InputStreamReader(inStream));
-
-			
+				//File file = new File(caminho, "/" + nomeArquivo);
+				//FileInputStream inStream = new FileInputStream(file);
 				
+				//br = new BufferedReader(new InputStreamReader(inStream));
+
 				
-	//			while ((line = br.readLine()) != null) {
-					try {
+				br = new BufferedReader(new InputStreamReader( event.getFile().getInputstream() ));
 
-						while ((line = br.readLine()) != null) {
+				
+				// while ((line = br.readLine()) != null) {
+				try {
 
+					while ((line = br.readLine()) != null) {
+
+						cola = new Colaborador();
+						// "," ou ";" de acordo com o arquivo
+						String[] row = line.split(";");
+						System.out.println(row[0] + " - " + row[1] + " - " + row[2] + " - " + row[3] + " - " + row[4]
+								+ " - " + row[5]);
+
+						cola.setNome(row[0]);
+						cola.setPis(row[1]);
+						cola.setMatricula(row[2]);
+						cola.setCtps(row[3]);
+						cola.setCtpsSerie(row[4]);
+						cola.setEmpresa(empresaSelecionada);
+						cola.setFilial(filialSelecionada);
+						cola.setDepto(deptoSelecionada);
+
+						try {
+							DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+							Date date = (Date) formatter.parse(row[5]);
+							cola.setDataAdmissao(date);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 							cola = new Colaborador();
-							// "," ou ";" de acordo com o arquivo
-							String[] row = line.split(";");
-							System.out.println(row[0] + " - " + row[1] + " - "
-									+ row[2] + " - " + row[3] + " - " + row[4]
-									+ " - " + row[5]);
+							continue;
+						}
 
-							cola.setNome(row[0]);
-							cola.setPis(row[1]);
-							cola.setMatricula(row[2]);
-							cola.setCtps(row[3]);
-							cola.setCtpsSerie(row[4]);
-							cola.setEmpresa(empresaSelecionada);
-							cola.setFilial(filialSelecionada);
-							cola.setDepto(deptoSelecionada);
-
-							try {
-								DateFormat formatter = new SimpleDateFormat(
-										"dd/MM/yyyy");
-								Date date = (Date) formatter.parse(row[5]);
-								cola.setDataAdmissao(date);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								cola = new Colaborador();
-								continue;
-							}
-
-							lstColaborador.add(cola);
-							cola = new Colaborador();
-						}// while
-					} catch (Exception e) {
-						System.out.println(e.getMessage());
-					}
-			//	} // while
+						lstColaborador.add(cola);
+						cola = new Colaborador();
+					} // while
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+				// } // while
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -399,12 +400,11 @@ public class UploadColaborador implements Serializable {
 						e.printStackTrace();
 					}
 				}
-			}// try
+			} // try
 		} else // se nao é csv
 		{
 			try {
-				br = new BufferedReader(new FileReader(caminho + "/"
-						+ nomeArquivo));
+				br = new BufferedReader(new FileReader(caminho + "/" + nomeArquivo));
 
 				try {
 
@@ -412,57 +412,38 @@ public class UploadColaborador implements Serializable {
 
 						cola = new Colaborador();
 
-						System.out.println("Nome "
-								+ line.substring(posNome - 1, posNome + tamNome
-										- 1));
-						System.out.println("PIS "
-								+ line.substring(posPIS - 1, posPIS + tamPIS
-										- 1));
-						System.out.println("Mat "
-								+ line.substring(posMat - 1, posMat + tamMat
-										- 1));
-						System.out.println("CTPS "
-								+ line.substring(posCTPS - 1, posCTPS + tamCTPS
-										- 1));
-						System.out.println("CTPS Serie "
-								+ line.substring(posCTPSSerie - 1, posCTPSSerie
-										+ tamCTPSSerie - 1));
-						System.out.println("Data "
-								+ line.substring(posData - 1, posData + tamData
-										- 1));
+						System.out.println("Nome " + line.substring(posNome - 1, posNome + tamNome - 1));
+						System.out.println("PIS " + line.substring(posPIS - 1, posPIS + tamPIS - 1));
+						System.out.println("Mat " + line.substring(posMat - 1, posMat + tamMat - 1));
+						System.out.println("CTPS " + line.substring(posCTPS - 1, posCTPS + tamCTPS - 1));
+						System.out.println(
+								"CTPS Serie " + line.substring(posCTPSSerie - 1, posCTPSSerie + tamCTPSSerie - 1));
+						System.out.println("Data " + line.substring(posData - 1, posData + tamData - 1));
 
-						cola.setNome(line.substring(posNome - 1, tamNome
-								+ posNome - 1));
-						cola.setPis(line.substring(posPIS - 1, posPIS + tamPIS
-								- 1));
-						cola.setMatricula(line.substring(posMat - 1, posMat
-								+ tamMat - 1));
-						cola.setCtps(line.substring(posCTPS - 1, posCTPS
-								+ tamCTPS - 1));
-						cola.setCtpsSerie(line.substring(posCTPSSerie - 1,
-								posCTPSSerie + tamCTPSSerie - 1));
+						cola.setNome(line.substring(posNome - 1, tamNome + posNome - 1));
+						cola.setPis(line.substring(posPIS - 1, posPIS + tamPIS - 1));
+						cola.setMatricula(line.substring(posMat - 1, posMat + tamMat - 1));
+						cola.setCtps(line.substring(posCTPS - 1, posCTPS + tamCTPS - 1));
+						cola.setCtpsSerie(line.substring(posCTPSSerie - 1, posCTPSSerie + tamCTPSSerie - 1));
 						cola.setEmpresa(empresaSelecionada);
 						cola.setFilial(filialSelecionada);
 						cola.setDepto(deptoSelecionada);
 
 						try {
-							DateFormat formatter = new SimpleDateFormat(
-									"ddMMyyyy");
-							Date date = (Date) formatter.parse(line.substring(
-									posData - 1, posData + tamData - 1));
+							DateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+							Date date = (Date) formatter.parse(line.substring(posData - 1, posData + tamData - 1));
 							cola.setDataAdmissao(date);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							listaLog.add("Data invalida " + line.substring(
-									posData - 1, posData + tamData - 1) );
+							listaLog.add("Data invalida " + line.substring(posData - 1, posData + tamData - 1));
 							cola = new Colaborador();
 							continue;
 						}
 
 						lstColaborador.add(cola);
 						cola = new Colaborador();
-					}// while
+					} // while
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
@@ -479,9 +460,9 @@ public class UploadColaborador implements Serializable {
 						e.printStackTrace();
 					}
 				}
-			}// try
+			} // try
 
-		}// nao csv
+		} // nao csv
 
 		for (Colaborador c : lstColaborador) {
 
@@ -494,17 +475,17 @@ public class UploadColaborador implements Serializable {
 					System.out.println("Guarda cola " + c.getNome());
 					colaboradores.guardar(c);
 				} else {
-					listaLog.add("Colaborador já cadastradado : PIS " + cola.getPis() + "  -  Nome " + cola.getNome() );
+					listaLog.add("Colaborador já cadastradado : PIS " + cola.getPis() + "  -  Nome " + cola.getNome());
 				}
 
 			} else {
-				listaLog.add("Pis não encontrado, nulo" );
+				listaLog.add("Pis não encontrado, nulo");
 			}
 
-		}// for
+		} // for
 
 		System.out.println("LISTA " + listaLog.size());
-		for(int i=0;i<listaLog.size();i++){
+		for (int i = 0; i < listaLog.size(); i++) {
 			System.out.println(listaLog.get(i));
 		}
 
@@ -515,126 +496,123 @@ public class UploadColaborador implements Serializable {
 		FacesUtil.addInfoMessage("Importação finalizada com sucesso");
 	}// handleFileUpload
 
-	
-	public void handleFileUpload2(FileUploadEvent event) {
-		
-		
-		//source = new File("C:\\Users\\nikos7\\Desktop\\files\\sourcefile3.txt");
-		
-		        //dest = new File("C:\\Users\\nikos7\\Desktop\\files\\destfile3.txt");		
-		        //start = System.nanoTime();		
-		        //copyFileUsingJava7Files(source, dest);		
-		        //end = System.nanoTime();		
-		        //System.out.println("Time taken by Java7 Files Copy = " + (end - start));
-		
-		 
-		//File dest = new File("/usr/tmp/arquivo.csv");	
-		
+	public void handleFileUpload3(FileUploadEvent event) {
 
 		
-		        InputStream input = null;		
-		        OutputStream output = null;
+		Path folder = Paths.get("/usr/tmp");
+		String filename = FilenameUtils.getBaseName(event.getFile().getFileName()); 
+		String extension = FilenameUtils.getExtension(event.getFile().getFileName());
+		try {
+			Path file = Files.createTempFile(folder, filename + "-", "." + extension);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
-		        try {
 		
-		            try {
-						input = new FileInputStream(event.getFile().getFileName());
-						System.out.println("11111");
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		
-		            try {
-						output = new FileOutputStream("/usr/tmp/arquivo.csv");
-						System.out.println("22222");
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		
-		            byte[] buf = new byte[1024];
-		
-		            int bytesRead;
-		
-		            try {
-						while ((bytesRead = input.read(buf)) > 0) {		
-						    output.write(buf, 0, bytesRead);		
-						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		
-		        } finally {
-		
-		            try {
-						input.close();
-						System.out.println("3333");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}		
-		            try {
-						output.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		
-		        }
+//		try (InputStream input =  event.getFile().getInputstream()) {
+//		   // Files.copy(input, file, StandardCopyOption.REPLACE_EXISTING);
+//			
+//		}
 
+		System.out.println("Uploaded file successfully saved in " + file);
 		
+		
+		InputStream input = null;
+		OutputStream output = null;
+
+		try {
+
+			try {
+				input = new FileInputStream(event.getFile().getFileName());
+				System.out.println("11111");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				output = new FileOutputStream("/usr/tmp/arquivo.csv");
+				System.out.println("22222");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			byte[] buf = new byte[1024];
+
+			int bytesRead;
+
+			try {
+				while ((bytesRead = input.read(buf)) > 0) {
+					output.write(buf, 0, bytesRead);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} finally {
+
+			try {
+				input.close();
+				System.out.println("3333");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				output.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
 		System.out.println("EEE");
-		//System.out.println(event.getFile().getFileName());
-		
-		
-		
+		// System.out.println(event.getFile().getFileName());
+
 		String nomeArquivo = event.getFile().getFileName();
 		String caminho = "c:/lixo7";
 		BufferedReader br = null;
 		String line = "";
 		List<Colaborador> lstColaborador = new ArrayList<Colaborador>();
 		Colaborador cola = new Colaborador();
-		
-		
-		
 
 		try {
-			System.out.println("antes do FileReader  ");
+			System.out.println("antes do FileReader ");
 			br = new BufferedReader(new FileReader("/usr/tmp/arquivo.csv"));
-		    //br = new BufferedReader(new FileReader((File) event.getFile()));
-			
+			// br = new BufferedReader(new FileReader((File) event.getFile()));
+
 			System.out.println(" depois de FileRead");
 		} catch (IOException e) {
 			System.out.println("erro importacao......");
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			
+
+		} finally {
+			try {
+				br.close();
+			}
+
+			catch (IOException ex) {
+				System.err.println("An IOException was caught!");
+				ex.printStackTrace();
+			}
 		}
-		finally {
-			          try {
-			                br.close();
-			            }
-			
-			            catch (IOException ex) {
-			                System.err.println("An IOException was caught!");
-			                ex.printStackTrace();		
-			            }
-		        }     
-		
+
 	}
-	
-	public String carregaLog(){
-		
-		System.out.println("Carrega Log rotina "  );
+
+	public String carregaLog() {
+
+		System.out.println("Carrega Log rotina ");
 		System.out.println(listaLog.size());
-		for(String s : listaLog){
+		for (String s : listaLog) {
 			System.out.println(s);
 		}
 		return "";
 	}
-	
-	
+
 }
