@@ -181,6 +181,77 @@ public class CadastroNormaBean implements Serializable {
 
 	public CadastroNormaBean() {
 		norma = new Norma();
+		norma.setLimSegFaixaDiurno1(0);
+		norma.setLimSegFaixaDiurno2(0);
+		norma.setLimSegFaixaDiurno3(0);
+		norma.setLimSegFaixaNot1(0);
+		norma.setLimSegFaixaNot2(0);
+		norma.setLimSegFaixaNot3(0);
+		
+		norma.setLimTerFaixaDiurno1(0);
+		norma.setLimTerFaixaDiurno2(0);
+		norma.setLimTerFaixaDiurno3(0);
+		norma.setLimTerFaixaNot1(0);
+		norma.setLimTerFaixaNot2(0);
+		norma.setLimTerFaixaNot3(0);
+		
+		norma.setLimQuaFaixaDiurno1(0);
+		norma.setLimQuaFaixaDiurno2(0);
+		norma.setLimQuaFaixaDiurno3(0);
+		norma.setLimQuaFaixaNot1(0);
+		norma.setLimQuaFaixaNot2(0);
+		norma.setLimQuaFaixaNot3(0);
+		
+		norma.setLimQuiFaixaDiurno1(0);
+		norma.setLimQuiFaixaDiurno2(0);
+		norma.setLimQuiFaixaDiurno3(0);
+		norma.setLimQuiFaixaNot1(0);
+		norma.setLimQuiFaixaNot2(0);
+		norma.setLimQuiFaixaNot3(0);
+
+		norma.setLimSexFaixaDiurno1(0);
+		norma.setLimSexFaixaDiurno2(0);
+		norma.setLimSexFaixaDiurno3(0);
+		norma.setLimSexFaixaNot1(0);
+		norma.setLimSexFaixaNot2(0);
+		norma.setLimSexFaixaNot3(0);
+		
+		norma.setLimSabFaixaDiurno1(0);
+		norma.setLimSabFaixaDiurno2(0);
+		norma.setLimSabFaixaDiurno3(0);
+		norma.setLimSabFaixaNot1(0);
+		norma.setLimSabFaixaNot2(0);
+		norma.setLimSabFaixaNot3(0);
+		
+		norma.setLimDomFaixaDiurno1(0);
+		norma.setLimDomFaixaDiurno2(0);
+		norma.setLimDomFaixaDiurno3(0);
+		norma.setLimDomFaixaNot1(0);
+		norma.setLimDomFaixaNot2(0);
+		norma.setLimDomFaixaNot3(0);
+		
+		norma.setLimFerFaixaDiurno1(0);
+		norma.setLimFerFaixaDiurno2(0);
+		norma.setLimFerFaixaDiurno3(0);
+		norma.setLimFerFaixaNot1(0);
+		norma.setLimFerFaixaNot2(0);
+		norma.setLimFerFaixaNot3(0);
+		
+		norma.setLimFolFaixaDiurno1(0);
+		norma.setLimFolFaixaDiurno2(0);
+		norma.setLimFolFaixaDiurno3(0);
+		norma.setLimFolFaixaNot1(0);
+		norma.setLimFolFaixaNot2(0);
+		norma.setLimFolFaixaNot3(0);
+		
+		norma.setLimEspFaixaDiurno1(0);
+		norma.setLimEspFaixaDiurno2(0);
+		norma.setLimEspFaixaDiurno3(0);
+		norma.setLimEspFaixaNot1(0);
+		norma.setLimEspFaixaNot2(0);
+		norma.setLimEspFaixaNot3(0);
+		
+		
 		
 	}
 

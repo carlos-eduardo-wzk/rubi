@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
@@ -31,9 +32,10 @@ import repository.OcorrenciaApuradas;
 import repository.Ocorrencias;
 import util.jsf.JsfExceptionHandler;
 
-
+@Stateless
 public class ProcessaMarcacoes implements Serializable {
 
+	
 	private static final long serialVersionUID = 1L;
 
 	// @Inject
@@ -160,6 +162,7 @@ public class ProcessaMarcacoes implements Serializable {
 		OcorrenciaApurada oa = new OcorrenciaApurada();
 
 		lo = carregaHorarioAfastamentoFolga(cal.getTime(), c.getId());
+		
 
 		if (lo.size() > 0) {
 			for (Object[] o : lo) {
@@ -829,6 +832,7 @@ public class ProcessaMarcacoes implements Serializable {
 		try {
 
 			// chama function no postgres
+			System.out.println(">>>>>>>>>>>>>>1111 " + colaborador);
 
 			ProcedureCall procedureCall = session
 					.createStoredProcedureCall("fc_horarioafastamentofolga");
@@ -838,12 +842,15 @@ public class ProcessaMarcacoes implements Serializable {
 					ParameterMode.IN);
 			procedureCall.getParameterRegistration("dia").bindValue(
 					new java.sql.Date(dia.getTime()));
-			procedureCall.getParameterRegistration("cola").bindValue(95L);
+			procedureCall.getParameterRegistration("cola").bindValue(colaborador);
 			ProcedureOutputs procedureOutputs = procedureCall.getOutputs();
 			ResultSetOutput resultSetOutput = (ResultSetOutput) procedureOutputs
 					.getCurrent();
 			List<Object[]> resultado = resultSetOutput.getResultList();
 
+			System.out.println("fim 111 ");
+			//System.out.println(" resultado  "+resultado.get(0).toString());
+			
 			// for(Integer i=0;i<resultado.size();i++) {
 			// Object[] objects = (Object[]) resultado.get(i);
 			// System.out.println("The benefit is "+objects[1]);

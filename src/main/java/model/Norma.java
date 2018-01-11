@@ -504,7 +504,7 @@ public class Norma implements Serializable {
 		this.norma = norma.toUpperCase();
 	}
 
-	public Integer getOcorrenciaHeSegFaixaDiurno1() {
+	public Integer getOcorrenciaHeSegFaixaDiurno1() {			 
 		return OcorrenciaHeSegFaixaDiurno1;
 	}
 

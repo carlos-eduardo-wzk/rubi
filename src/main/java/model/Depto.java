@@ -54,7 +54,8 @@ public class Depto implements Serializable {
 		return depto;
 	}
 	public void setDepto(String depto) {
-		this.depto = depto;
+		this.depto = depto.toUpperCase();
+		
 	}
 	public String getSigla() {
 		return sigla;

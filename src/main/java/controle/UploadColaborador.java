@@ -404,7 +404,8 @@ public class UploadColaborador implements Serializable {
 		} else // se nao é csv
 		{
 			try {
-				br = new BufferedReader(new FileReader(caminho + "/" + nomeArquivo));
+				br = new BufferedReader(new InputStreamReader( event.getFile().getInputstream() ));
+
 
 				try {
 

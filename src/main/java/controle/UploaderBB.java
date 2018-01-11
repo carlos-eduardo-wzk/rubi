@@ -3,11 +3,8 @@ package controle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,12 +19,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import model.Marcacao;
-
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.UploadedFile;
 
+import model.Marcacao;
 import util.ProcessaMarcacoes;
 import util.jsf.FacesUtil;
 
@@ -44,7 +40,7 @@ public class UploaderBB implements Serializable {
 
 	@Inject
 	private ProcessaMarcacoes pr;
-		
+
 	private Marcacao marcacao;
 
 	private Date dataini;
@@ -64,24 +60,24 @@ public class UploaderBB implements Serializable {
 		String line = "";
 		List<Marcacao> lstMarcacao = new ArrayList<Marcacao>();
 
-		try {
-			File targetFolder = new File(caminho);
-			nomeArquivo = event.getFile().getFileName();
-			InputStream inputStream = event.getFile().getInputstream();
-			OutputStream out = new FileOutputStream(new File(targetFolder,
-					event.getFile().getFileName()));
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			while ((read = inputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-			inputStream.close();
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// File targetFolder = new File(caminho);
+		// nomeArquivo = event.getFile().getFileName();
+		// InputStream inputStream = event.getFile().getInputstream();
+		// OutputStream out = new FileOutputStream(new File(targetFolder,
+		// event.getFile().getFileName()));
+		// int read = 0;
+		// byte[] bytes = new byte[1024];
+		//
+		// while ((read = inputStream.read(bytes)) != -1) {
+		// out.write(bytes, 0, read);
+		// }
+		// inputStream.close();
+		// out.flush();
+		// out.close();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 		try {
 			String data;
@@ -92,24 +88,24 @@ public class UploaderBB implements Serializable {
 			String fonteDados;
 
 			fonteDados = caminho + "/" + nomeArquivo;
-			br = new BufferedReader(new FileReader(caminho + "/" + nomeArquivo));
-			
+			// br = new BufferedReader(new FileReader(caminho + "/" + nomeArquivo));
+			br = new BufferedReader(new InputStreamReader(event.getFile().getInputstream()));
+
 			DateFormat formatter1 = new SimpleDateFormat("dd/MM/yyyy");
-			DateFormat formatter2 = new SimpleDateFormat(
-					"dd/MM/yyyy hh:mm:ss.S");
+			DateFormat formatter2 = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.S");
 
-
-			
 			if (sobreporJuncao == true) {
 				// apaga as marcacoes importadas
 				System.out.println(" Apaguei marcacaoes " + dataini);
 				System.out.println(" Apaguei marcacaoes " + datafim);
-				
+
 				apagarMarcacaoNoPeriodo(dataini, datafim);
 			}
 
 			while ((line = br.readLine()) != null) {
-				
+
+				System.out.println(line);
+
 				Marcacao marcacao = new Marcacao();
 
 				try {
@@ -126,16 +122,13 @@ public class UploaderBB implements Serializable {
 					}
 
 					// pega data
-					data = line.substring(10, 12) + "/"
-							+ line.substring(12, 14) + "/"
-							+ line.substring(14, 18);
+					data = line.substring(10, 12) + "/" + line.substring(12, 14) + "/" + line.substring(14, 18);
 
 					if (data == null || data.equals(""))
 						continue;
 
 					// pega hora
-					hora = line.substring(18, 20) + ":"
-							+ line.substring(20, 22);
+					hora = line.substring(18, 20) + ":" + line.substring(20, 22);
 
 					// pega PIS
 					pis = line.substring(22, 34);
@@ -143,29 +136,24 @@ public class UploaderBB implements Serializable {
 					// pega nsr
 					nsr = line.substring(0, 9);
 
-					Date date2 = formatter2.parse(line.substring(10, 12) + "/"
-							+ line.substring(12, 14) + "/"
+					Date date2 = formatter2.parse(line.substring(10, 12) + "/" + line.substring(12, 14) + "/"
 							+ line.substring(14, 18) + " 00:00:00.0");
 
-					Date date1 = formatter1.parse(line.substring(10, 12) + "/"
-							+ line.substring(12, 14) + "/"
-							+ line.substring(14, 18));
+					Date date1 = formatter1.parse(
+							line.substring(10, 12) + "/" + line.substring(12, 14) + "/" + line.substring(14, 18));
 
-					
-									
-					if ((date1.compareTo(dataini)<0) || (date1.compareTo(datafim)>0)) {
-						continue;						
+					if ((date1.compareTo(dataini) < 0) || (date1.compareTo(datafim) > 0)) {
+						continue;
 					}
-					
-					
+
 					// importa para banco
 					// arquivo.setTimestamp(7, data)
 
 					marcacao.setData(date2);
 
 					try {
-						marcacao.setHora(Integer.parseInt(hora.substring(0, 2))
-								* 60 + Integer.parseInt(hora.substring(3, 5)));
+						marcacao.setHora(
+								Integer.parseInt(hora.substring(0, 2)) * 60 + Integer.parseInt(hora.substring(3, 5)));
 
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
@@ -202,7 +190,7 @@ public class UploaderBB implements Serializable {
 		File targetFolder = new File(caminho);
 		targetFolder.delete();
 
-		//System.out.println("Feito");
+		// System.out.println("Feito");
 
 	}// handleFileUpload
 
@@ -216,8 +204,7 @@ public class UploaderBB implements Serializable {
 
 	public void upload() {
 		if (file != null) {
-			FacesMessage message = new FacesMessage("Succesful",
-					file.getFileName() + " is uploaded.");
+			FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 
 		}
@@ -276,10 +263,10 @@ public class UploaderBB implements Serializable {
 	}
 
 	/**
-	 * Importacao : criar dias importador 
+	 * Importacao : criar dias importador
 	 */
 	public void importacao() {
-		
+
 		System.out.println("entrei na importacao apos clicar em importar");
 
 		Calendar cal = Calendar.getInstance();
@@ -288,7 +275,7 @@ public class UploaderBB implements Serializable {
 		// dias entre as datas
 		int dias = daysBetween(dataini, datafim);
 		for (int i = 0; i <= dias; i++) {
-             			
+
 			// dia acrescentado de 1
 			importacaoAFD.diaParaImportacao(cal.getTime(), sobreporCalculo);
 
@@ -299,24 +286,22 @@ public class UploaderBB implements Serializable {
 		FacesUtil.addInfoMessage("Importação finalizada");
 	}// importacao
 
-
 	// retorna o numero de dias entre duas datas
 	public int daysBetween(Date d1, Date d2) {
 		return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
 	}
 
-	
-	public void  processar(String a) {
-		
-		//ProcessaMarcacoes pr = new ProcessaMarcacoes() ;
-		
-		if (a.equals("1")){
-	     	pr.processarMarcacao(dataini, datafim, false, null,false,null);
+	public void processar(String a) {
+
+		// ProcessaMarcacoes pr = new ProcessaMarcacoes() ;
+
+		if (a.equals("1")) {
+			pr.processarMarcacao(dataini, datafim, false, null, false, null);
 		}
-		if (a.equals("2")){
-	     	pr.processarMarcacao(dataini, datafim, true, null, false,null);
+		if (a.equals("2")) {
+			pr.processarMarcacao(dataini, datafim, true, null, false, null);
 		}
 		FacesUtil.addInfoMessage("Processamento finalizado");
 	}
-	
+
 }

@@ -3,8 +3,8 @@ package repository;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 
@@ -12,6 +12,7 @@ import model.Colaborador;
 import model.MarcacaoProcessada;
 import model.TipoDia;
 
+@Stateless
 public class MaracacaoProcessadas implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +28,7 @@ public class MaracacaoProcessadas implements Serializable {
 		session.flush();
 	}
 
-	@Transactional
+
 	public void salvaTipoDia(Colaborador c, Date dia, TipoDia td) {
 		System.out.println("salvaTipoDia " + td + "  " + dia);
 
@@ -45,10 +46,10 @@ public class MaracacaoProcessadas implements Serializable {
 
 		mp.setTipoDia(td);
 
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
 		session.merge(mp);
-		session.getTransaction().commit();
-		session.flush();
+		//session.getTransaction().commit();
+		//session.flush();
 	}
 
 }

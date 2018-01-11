@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Criteria;
@@ -15,6 +16,7 @@ import model.HorarioColaborador;
 import model.Marcacao;
 import model.MarcacaoProcessada;
 
+@Stateless
 public class Marcacoes implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,15 +25,15 @@ public class Marcacoes implements Serializable {
 
 	public void salvaMarcacao(Marcacao marcacao) {
 
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
 		session.merge(marcacao);
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 
 	}
 
 	public void salvaListaMarcacao(List<Marcacao> lstmarcacao) {
 
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
 		for (int i = 0; i < lstmarcacao.size(); i++) {
 			session.merge(lstmarcacao.get(i));
 			if (i % 20 == 0) {
@@ -41,18 +43,25 @@ public class Marcacoes implements Serializable {
 
 		}// for
 
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 	}
 
 	public void apagarMarcacaoNoPeriodo(Date di, Date df) {
 
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
+		
+		System.out.println(" Dentro de apagarMarcacaoNoPeriodo di " + di );
+		System.out.println(" Dentro de apagarMarcacaoNoPeriodo df " + df );
+		
+
 
 		session.createQuery(
 				"DELETE FROM Marcacao where data >=:di and data <= :df")
 				.setParameter("di", di).setParameter("df", df).executeUpdate();
-		session.getTransaction().commit();
-		session.flush();
+		
+		
+		//session.getTransaction().commit();
+		//session.flush();
 
 	}
 
@@ -66,28 +75,35 @@ public class Marcacoes implements Serializable {
 	}
 
 	public void criarRegistroMarcacaoProcessada(Date dia) {
-		session.getTransaction().begin();
+		System.out.println(" criarRegistroMarcacaoProcessada ");
+		//session.getTransaction().begin();
 
 		session.createQuery(
 				"insert into MarcacaoProcessada (data, colaborador_id) select :dia , Id from Colaborador where dataDemissao is null")
 				.setParameter("dia", dia).executeUpdate();
-		session.getTransaction().commit();
+		
+		//session.getTransaction().commit();
 	}
 
 	public void apagarMarcacaoProcessadaNoDia(Date dia) {
 
-		session.getTransaction().begin();
+		System.out.println(" apagarMarcacaoProcessadaNoDia ");
+		
+		//session.getTransaction().begin();
 
 		session.createQuery("DELETE FROM MarcacaoProcessada where data = :dia")
 				.setParameter("dia", dia).executeUpdate();
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 
 		session.getTransaction().begin();
 		session.createQuery("DELETE FROM MarcacaoDetalhe where data = :dia")
 				.setParameter("dia", dia).executeUpdate();	
-		session.getTransaction().commit();
 		
-		session.flush();
+		//session.getTransaction().commit();
+		
+		//session.flush();
+		
+		System.out.println(" apagarMarcacaoProcessadaNoDia 2");
 		
 		
 	}
@@ -175,10 +191,10 @@ public class Marcacoes implements Serializable {
 	}
 
 	public void mudarDataMarcacaoDiaAnterior(Marcacao marcacao, Date dia) {
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
 		marcacao.setData(dia);
 		session.merge(marcacao);
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 
 	}
 
