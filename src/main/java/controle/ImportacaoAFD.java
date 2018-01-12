@@ -5,24 +5,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.view.ViewScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import model.HorarioColaborador;
-import model.Marcacao;
-import model.MarcacaoDetalhe;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import model.HorarioColaborador;
+import model.Marcacao;
+import model.MarcacaoDetalhe;
 import repository.Afastamentos;
 import repository.MarcacaoDetalhes;
 import repository.Marcacoes;
 import util.jsf.JsfExceptionHandler;
 
 @Named
-@ViewScoped
+@Stateless
 public class ImportacaoAFD implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -116,10 +115,11 @@ public class ImportacaoAFD implements Serializable {
 
 			try {
 				// afastamento / ferias
+				System.out.println(" antes de estaAfastadoPorMatriculaDia" + marHoje.getPis());
 				estaAfastado = afastamentos.estaAfastadoPorMatriculaDia(
 						marHoje.getPis(), dia);
 			} catch (Exception e) {
-				System.out.println(" " + marHoje.getMatricula());
+				System.out.println(e.getMessage() + " " + marHoje.getMatricula());
 			}
 
 			System.out.println("******************************************");

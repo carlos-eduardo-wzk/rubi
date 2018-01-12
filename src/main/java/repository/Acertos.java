@@ -5,7 +5,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
+import javax.inject.Named;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
@@ -13,7 +14,8 @@ import org.hibernate.Session;
 import filter.AcertoFilter;
 import model.Acerto;
 
-@Stateless
+@Named
+@Stateful
 public class Acertos implements Serializable {
 
 	private static final long serialVersionUID = 1L;

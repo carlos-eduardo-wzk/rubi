@@ -184,7 +184,7 @@ public class OcorrenciaApuradas implements Serializable {
 	public void salvaOcorrenciaApuradas(OcorrenciaApurada ocorrenciaApurada) {
 
 		// session.getTransaction().begin();
-		session.merge(ocorrenciaApurada);
+		session.saveOrUpdate(ocorrenciaApurada);
 		// session.getTransaction().commit();
 
 	}
@@ -220,7 +220,7 @@ public class OcorrenciaApuradas implements Serializable {
 		oa.setTipoDia(td);
 
 		// session.getTransaction().begin();
-		session.merge(oa);
+		session.saveOrUpdate(oa);
 		// session.getTransaction().commit();
 		// session.flush();
 	}

@@ -107,8 +107,13 @@ public class ProcessaMarcacoes implements Serializable {
 				cal.setTime(di);
 				// fazer for di...df
 				numDias = daysBetween(di, df);
+				
+				ocorrenciaApuradas.apagaOcorrenciaDiaColaborador(di,df , c);
 
 				for (int i = 0; i <= numDias; i++) {
+					
+					
+					
 					processaMarcacaoPeriodo(cal, c, marc);
 					// acrescentar 1 dia
 					cal.add(Calendar.DATE, 1);

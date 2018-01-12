@@ -403,7 +403,7 @@
 
 					<p:commandButton icon="ui-icon-pencil" title="Abonar"
 						oncomplete="PF('dlgAbono').show()" process="@this"
-						action="#{acertoAbono.carregaJornada}" update=":frm:abonoDialog">
+						action="#{acertoAbono.carregaJornada}" update=":frm:abonoDialog" >
 						<f:setPropertyActionListener
 							target="#{acertoAbono.acertoSelecionado}" value="#{acerto}" />
 					</p:commandButton>

@@ -65,16 +65,16 @@ public class Afastamentos implements Serializable {
 		return (Afastamento) session.get(Afastamento.class, id);
 	}
 
-	@Transactional
+
 	public Afastamento guardar(Afastamento afastamento) {
 		FacesUtil.addInfoMessage("Cadastrado com sucesso");
 
 		Afastamento afa = new Afastamento();
 
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
 		afa = (Afastamento) session.merge(afastamento);
-		session.getTransaction().commit();
-		session.flush();
+		//session.getTransaction().commit();
+		//session.flush();
 
 		return afa;
 	}
@@ -84,10 +84,10 @@ public class Afastamentos implements Serializable {
 		try {
 			afastamentoSelecionado = porId(afastamentoSelecionado.getId());
 
-			session.getTransaction().begin();
+			//session.getTransaction().begin();
 			session.delete(afastamentoSelecionado);
-			session.getTransaction().commit();
-			session.flush();
+			//session.getTransaction().commit();
+			//session.flush();
 
 		} catch (PersistenceException e) {
 			throw new NegocioException("Afastamento não pode ser excluido");
@@ -102,8 +102,8 @@ public class Afastamentos implements Serializable {
 	public Boolean estaAfastadoPorMatriculaDia(String pis, Date dia) {
 
 		try {
-			String jpql = "select a from Afastamento a inner join fetch a.colaborador where  a.colaborador.pis = :colaborador_id  "
-					+ "  and (a.dataAfastamentoIni <= :dia and a.dataAfastamentoFim >= :dia )  ";
+				String jpql = "select a from Afastamento a inner join fetch a.colaborador where  a.colaborador.pis = :pis  "
+						+ "  and (a.dataAfastamentoIni <= :dia and a.dataAfastamentoFim >= :dia )  ";
 			@SuppressWarnings("unused")
 			Afastamento resultado = (Afastamento) session.createQuery(jpql).setParameter("pis", pis)
 					.setParameter("dia", dia).uniqueResult();

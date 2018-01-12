@@ -3,6 +3,11 @@ package filter;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+@Named
+@ViewScoped
 public class AcertoFilter implements Serializable {
 
 	private static final long serialVersionUID = 1L;

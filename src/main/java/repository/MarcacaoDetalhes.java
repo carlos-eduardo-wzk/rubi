@@ -3,6 +3,7 @@ package repository;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
@@ -11,6 +12,7 @@ import org.hibernate.Session;
 import model.MarcacaoDetalhe;
 import model.MarcacaoOriginal;
 
+@Stateless
 public class MarcacaoDetalhes implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -19,21 +21,22 @@ public class MarcacaoDetalhes implements Serializable {
 
 	public void salvaMarcacaoDetalhe(MarcacaoDetalhe marcacaoDetalhe) {
 		
-		session.getTransaction().begin();
-		session.merge(marcacaoDetalhe);
-		session.getTransaction().commit();
-		session.flush();
+		//session.getTransaction().begin();
+		session.saveOrUpdate(marcacaoDetalhe);
+		
+		//session.getTransaction().commit();
+		//session.flush();
 		
 	}
 
 	public void apagarMarcacaoDetalheNoPeriodo(Date di, Date df) {
 		
-		session.getTransaction().begin();
+		//session.getTransaction().begin();
 		session.createQuery(
 				"DELETE FROM MarcacaoDetalhe where data >= :di and data <= :df")
 				.setParameter("di", di).setParameter("df", df).executeUpdate();
-		session.getTransaction().commit();
-		session.flush();
+		//session.getTransaction().commit();
+		//session.flush();
 	}
 
 	public MarcacaoDetalhe achMarcacaoDetalheDoColaboradorNoDiaPis(Date dia,
