@@ -129,6 +129,7 @@ public class ProcessaMarcacoes implements Serializable {
 					if (cola != null) {
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(ab.getData());
+						ocorrenciaApuradas.apagaOcorrenciaDiaColaborador(ab.getData(),ab.getData() , cola);
 
 						processaMarcacaoPeriodo(cal, cola, marc);
 					}

@@ -73,7 +73,7 @@
 
 					<p:outputLabel value="Empresa" for="empresa"
 						styleClass="rotuloCampo" />
-					<p:selectOneMenu id="empresa"
+					<p:selectOneMenu id="empresa"  converter="#{empresaConverter}"
 						value="#{acertoAbonos.empresaSelecionada}" style="width:280px"
 						required="true">
 						<f:selectItems value="#{acertoAbonos.listaEmpresa}" var="empresa"

@@ -38,7 +38,7 @@ import util.Rotinas;
 import util.jsf.FacesUtil;
 
 @Named
-@Stateless
+@Stateless 
 public class AcertoAbono implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -115,6 +115,8 @@ public class AcertoAbono implements Serializable {
 		listaMotivoAbono = carregarListaMotivoAbonos();
 		listaHistorico = carregarListaHistoricos();
 		lstMarcacaoDetalheTmp = new ArrayList<MarcacaoDetalheTmp>();
+		lstobj = null;
+		
 
 	}
 

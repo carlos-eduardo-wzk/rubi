@@ -200,6 +200,7 @@ public class OcorrenciaApuradas implements Serializable {
 	}
 
 	public void apagaOcorrenciaDiaColaborador(Date di, Date df, Colaborador cola) {
+		System.out.println(" apagaOcorrenciaDiaColaborador ");
 
 		// session.getTransaction().begin();
 		session.createQuery(

@@ -4226,6 +4226,15 @@ public class Calculo implements Serializable {
 				Atraso1[0] = HS1 - HE1;
 				Atraso2[0] = HS2 - HE2;
 			}
+			
+			// 66
+			if ((E1>HE1) && (E1<=HS1) && (S1>=HS1) && (S1<=HE2) && (E2>=HE2) && (E2<=HS2) && (S2>=HE2) && (S2<=HS2)) {
+				Atraso1[0] = E1 - HE1;
+				Atraso2[0] = E2 - HE2;
+				SaidaAnt2[0] = HS2 - S2;
+			}
+			
+			
 
 		} // 4 bat 4 hora
 
