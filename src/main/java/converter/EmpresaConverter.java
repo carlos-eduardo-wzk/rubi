@@ -25,7 +25,7 @@ public class EmpresaConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
-		System.out.println("empresa converter obj");
+
 		Empresa retorno = null;
 		if (value != null) {
 			Long id = new Long(value);
@@ -36,7 +36,7 @@ public class EmpresaConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object value) {
-		System.out.println("empresa converter str");
+
 		if (value != null) {
 			Empresa empresa = (Empresa) value;
 			return empresa.getId() == null ? null : empresa.getId().toString();

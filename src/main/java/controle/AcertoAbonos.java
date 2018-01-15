@@ -2,29 +2,27 @@ package controle;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.faces.event.ActionEvent;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.PersistenceContext;
 
-import model.Acerto;
+import org.hibernate.Session;
+import org.primefaces.event.SelectEvent;
+
+import filter.AcertoFilter;
 import model.AcertoAbono;
 import model.Colaborador;
 import model.Depto;
 import model.Empresa;
-import model.Feriado;
 import model.Filial;
 import model.Historico;
 import model.HorarioAvulso;
@@ -37,10 +35,6 @@ import model.MotivoAbono;
 import model.MotivoAfastamento;
 import model.OcorrenciaApurada;
 import model.UnidadeFederacao;
-
-import org.hibernate.Session;
-import org.primefaces.event.SelectEvent;
-
 import repository.AcertosAbonos;
 import repository.Colaboradores;
 import repository.Deptos;
@@ -57,10 +51,9 @@ import tarefas.CalcImportacao;
 import util.ProcessaMarcacoes;
 import util.Rotinas;
 import util.jsf.FacesUtil;
-import filter.AcertoFilter;
 
 @Named
-@Stateless 
+@Stateless
 public class AcertoAbonos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -101,11 +94,9 @@ public class AcertoAbonos implements Serializable {
 	@PersistenceContext(unitName = "safiraPU")
 	private Session session;
 
-	
 	@Inject
 	private CalcImportacao calcImportacao;
-	
-	
+
 	@Inject
 	private AcertosAbonos acertosAbonos;
 
@@ -176,13 +167,21 @@ public class AcertoAbonos implements Serializable {
 
 	@PostConstruct
 	public void inicializar() {
-		listaMotivoAbono = carregarListaMotivoAbonos();
-		listaHistorico = carregarListaHistoricos();
-		lstMarcacaoDetalheTmp = new ArrayList<MarcacaoDetalheTmp>();
-		listaEmpresa = carregaEmpresa();
-		listaFilial = carregaFilial();
-		listaDepto = carregaDepto();
 
+		if (FacesUtil.isNotPostback()) {
+			listaMotivoAbono = carregarListaMotivoAbonos();
+			listaHistorico = carregarListaHistoricos();
+			lstMarcacaoDetalheTmp = new ArrayList<MarcacaoDetalheTmp>();
+			listaEmpresa = carregaEmpresa();
+			listaFilial = carregaFilial();
+			listaDepto = carregaDepto();
+			
+		}
+
+	}
+	
+	public AcertoAbonos() {
+		lstobj = null;
 	}
 
 	public String[] getSelectedTipos() {
@@ -373,8 +372,7 @@ public class AcertoAbonos implements Serializable {
 		return motivoAbonoSelecionadoGrupo;
 	}
 
-	public void setMotivoAbonoSelecionadoGrupo(
-			MotivoAbono motivoAbonoSelecionadoGrupo) {
+	public void setMotivoAbonoSelecionadoGrupo(MotivoAbono motivoAbonoSelecionadoGrupo) {
 		this.motivoAbonoSelecionadoGrupo = motivoAbonoSelecionadoGrupo;
 	}
 
@@ -552,22 +550,20 @@ public class AcertoAbonos implements Serializable {
 		lstMarcacaoDetalheTmp = new ArrayList<MarcacaoDetalheTmp>();
 
 		// acho o horario programado para o dia
-		HorarioColaborador hc = marcacoes.horarioColaboradorDia(
-				acertoSelecionado.getData(), acertoSelecionado.getPis());
+		HorarioColaborador hc = marcacoes.horarioColaboradorDia(acertoSelecionado.getData(),
+				acertoSelecionado.getPis());
 
 		String jpql = " select  h2.jornada_id from horario  as h "
 				+ " inner join horario_jornada AS h2  ON h.horario_id = h2.horario_id "
 				+ " left join Jornada AS j   ON h2.Jornada_id = j.Jornada_id "
-				+ " where (1=1) and (h.horario_id = :horario) and "
-				+ "                (h2.seq =  ( SELECT "
+				+ " where (1=1) and (h.horario_id = :horario) and " + "                (h2.seq =  ( SELECT "
 				+ " 1 +  mod( (SELECT  :dia - cast( data_base as date) from Horario where horario_id= h2.horario_id  )  , CAST( vw_contaseqhorario.Expr1 AS BIGINT) ) "
 				+ " FROM    vw_contaSeqHorario INNER JOIN vw_totdiasDtBaseHohe "
 				+ " ON vw_contaseqhorario.horario_id = vw_totdiasDtBaseHohe.horario_id"
 				+ " WHERE        (vw_contaSeqHorario.horario_id = h2.horario_id ) ) )";
 
 		BigInteger resultado = (BigInteger) session.createSQLQuery(jpql)
-				.setParameter("dia", acertoSelecionado.getData())
-				.setParameter("horario", hc.getHorario().getId())
+				.setParameter("dia", acertoSelecionado.getData()).setParameter("horario", hc.getHorario().getId())
 				.uniqueResult();
 
 		jornada = jornadas.porId(resultado.longValue());
@@ -609,9 +605,8 @@ public class AcertoAbonos implements Serializable {
 			setmS4(rt.InteitoToHora(acertoSelecionado.getH8()));
 		}
 
-		marcacaoOriginal = marcacaoDetalhes
-				.MarcacoesDoColaboradorOriginalNoDiaPorPis(
-						acertoSelecionado.getData(), acertoSelecionado.getPis());
+		marcacaoOriginal = marcacaoDetalhes.MarcacoesDoColaboradorOriginalNoDiaPorPis(acertoSelecionado.getData(),
+				acertoSelecionado.getPis());
 
 	}
 
@@ -699,8 +694,7 @@ public class AcertoAbonos implements Serializable {
 		return lstMarcacaoDetalheTmp;
 	}
 
-	public void setLstMarcacaoDetalheTmp(
-			List<MarcacaoDetalheTmp> lstMarcacaoDetalheTmp) {
+	public void setLstMarcacaoDetalheTmp(List<MarcacaoDetalheTmp> lstMarcacaoDetalheTmp) {
 		this.lstMarcacaoDetalheTmp = lstMarcacaoDetalheTmp;
 	}
 
@@ -871,7 +865,7 @@ public class AcertoAbonos implements Serializable {
 				if (original[k] == digitadas[i]) {
 					achou = true;
 				}
-			}// for
+			} // for
 
 			if ((achou == false) && (original[k] > 0)) {
 				mdt = new MarcacaoDetalheTmp();
@@ -883,7 +877,7 @@ public class AcertoAbonos implements Serializable {
 				mdt.setMotivo("");
 				lstMarcacaoDetalheTmp.add(mdt);
 			}
-		}// for
+		} // for
 
 		// analisa digitados
 		for (int k = 0; k < 8; k++) {
@@ -920,57 +914,50 @@ public class AcertoAbonos implements Serializable {
 			if (lstMarcacaoDetalheTmp.get(k).getTipo() == "I") {
 
 				MarcacaoDetalhe marcacaoDetalhe = new MarcacaoDetalhe();
-				marcacaoDetalhe.setColaborador(colaboradores
-						.porPIS(acertoSelecionado.getPis()));
+				marcacaoDetalhe.setColaborador(colaboradores.porPIS(acertoSelecionado.getPis()));
 				marcacaoDetalhe.setData(acertoSelecionado.getData());
 				marcacaoDetalhe.setHora(lstMarcacaoDetalheTmp.get(k).getHora());
 				marcacaoDetalhe.setOriginal(false);
 				marcacaoDetalhe.setTipo(lstMarcacaoDetalheTmp.get(k).getTipo());
-				marcacaoDetalhe.setMotivo(lstMarcacaoDetalheTmp.get(k)
-						.getMotivo());
+				marcacaoDetalhe.setMotivo(lstMarcacaoDetalheTmp.get(k).getMotivo());
 				marcacaoDetalhes.salvaMarcacaoDetalhe(marcacaoDetalhe);
 			}
 
 			if (lstMarcacaoDetalheTmp.get(k).getTipo() == "D") {
 
-				marcacaoDetalhe = marcacaoDetalhes
-						.achMarcacaoDetalheDoColaboradorNoDiaPis(
-								acertoSelecionado.getData(),
-								acertoSelecionado.getPis(),
-								lstMarcacaoDetalheTmp.get(k).getHora());
+				marcacaoDetalhe = marcacaoDetalhes.achMarcacaoDetalheDoColaboradorNoDiaPis(acertoSelecionado.getData(),
+						acertoSelecionado.getPis(), lstMarcacaoDetalheTmp.get(k).getHora());
 
 				System.out.println(marcacaoDetalhe);
 
 				// se for original true .. consultar para saber o que gravar
-				if ((marcacaoDetalhe == null)
-						|| (marcacaoDetalhe.getOriginal() == false)) {
+				if ((marcacaoDetalhe == null) || (marcacaoDetalhe.getOriginal() == false)) {
 					marcacaoDetalhe.setOriginal(false);
 				} else {
 					marcacaoDetalhe.setOriginal(true);
 				}
 
 				marcacaoDetalhe.setTipo(lstMarcacaoDetalheTmp.get(k).getTipo());
-				marcacaoDetalhe.setMotivo(lstMarcacaoDetalheTmp.get(k)
-						.getMotivo());
+				marcacaoDetalhe.setMotivo(lstMarcacaoDetalheTmp.get(k).getMotivo());
 				marcacaoDetalhes.salvaMarcacaoDetalhe(marcacaoDetalhe);
 			}
-		}// for
+		} // for
 
 		System.out.println("processaAcerto --->>> " + acertoSelecionado);
 
 		listacolab.add(colaboradores.porPIS(acertoSelecionado.getPis()));
 
-//		pr.processarMarcacao(acertoSelecionado.getData(),
-//				acertoSelecionado.getData(), false, listacolab, true, null);
-		
-//		ExecutorService executorService  = Executors.newCachedThreadPool();	
-//		executorService.execute(new CalcImportacao(acertoSelecionado.getData(),
-//				acertoSelecionado.getData(), false, listacolab, true, null));
-	
+		// pr.processarMarcacao(acertoSelecionado.getData(),
+		// acertoSelecionado.getData(), false, listacolab, true, null);
+
+		// ExecutorService executorService = Executors.newCachedThreadPool();
+		// executorService.execute(new CalcImportacao(acertoSelecionado.getData(),
+		// acertoSelecionado.getData(), false, listacolab, true, null));
+
 		// chama runnable
-		calcImportacao.CalcImportacaoRun(acertoSelecionado.getData(),
-				acertoSelecionado.getData(), false, listacolab, true, null);
-		
+		calcImportacao.CalcImportacaoRun(acertoSelecionado.getData(), acertoSelecionado.getData(), false, listacolab,
+				true, null);
+
 	}// processaAcerto
 
 	public void processarAbono() {
@@ -978,8 +965,7 @@ public class AcertoAbonos implements Serializable {
 
 		// acha ocorrenciaApurada data,colaborador,ocorrencia
 
-		System.out.println("motivo abono"
-				+ motivoAbonoSelecionado.getMotivoAbono());
+		System.out.println("motivo abono" + motivoAbonoSelecionado.getMotivoAbono());
 
 		System.out.println("Data " + acertoSelecionado.getData());
 		System.out.println("atraso " + acertoSelecionado.getAtraso());
@@ -1004,28 +990,22 @@ public class AcertoAbonos implements Serializable {
 
 		if (chkAtraso != null) {
 			if (chkAtraso == true) {
-				oa = ocorrenciaApuradas
-						.achaOcorrenciaApuradaDataColaboradorOcorrencia2(
-								acertoSelecionado.getOcorrenciaAtraso_id(),
-								acertoSelecionado);
+				oa = ocorrenciaApuradas.achaOcorrenciaApuradaDataColaboradorOcorrencia2(
+						acertoSelecionado.getOcorrenciaAtraso_id(), acertoSelecionado);
 			}
 		}
 
 		if (chkSaida != null) {
 			if (chkSaida == true) {
-				oa = ocorrenciaApuradas
-						.achaOcorrenciaApuradaDataColaboradorOcorrencia2(
-								acertoSelecionado.getOcorrenciaSaida_id(),
-								acertoSelecionado);
+				oa = ocorrenciaApuradas.achaOcorrenciaApuradaDataColaboradorOcorrencia2(
+						acertoSelecionado.getOcorrenciaSaida_id(), acertoSelecionado);
 			}
 		}
 
 		if (chkFalta != null) {
 			if (chkFalta == true) {
-				oa = ocorrenciaApuradas
-						.achaOcorrenciaApuradaDataColaboradorOcorrencia2(
-								acertoSelecionado.getOcorrenciaFalta_id(),
-								acertoSelecionado);
+				oa = ocorrenciaApuradas.achaOcorrenciaApuradaDataColaboradorOcorrencia2(
+						acertoSelecionado.getOcorrenciaFalta_id(), acertoSelecionado);
 			}
 		}
 		System.out.println("ggggg22");
@@ -1037,8 +1017,7 @@ public class AcertoAbonos implements Serializable {
 		ma.setId(motivoAbonoSelecionado.getId());
 		ma.setMotivoAbono(motivoAbonoSelecionado.getMotivoAbono());
 		oa.setMotivoAbono(ma);
-		System.out.println("horas no abono de falta "
-				+ acertoSelecionado.getAtraso());
+		System.out.println("horas no abono de falta " + acertoSelecionado.getAtraso());
 
 		Rotinas rt = new Rotinas();
 
@@ -1073,8 +1052,7 @@ public class AcertoAbonos implements Serializable {
 
 		// System.out.println("abona em grupo " + selectedAcertos.size());
 
-		System.out.println("motivo abono"
-				+ motivoAbonoSelecionado.getMotivoAbono());
+		System.out.println("motivo abono" + motivoAbonoSelecionado.getMotivoAbono());
 
 		for (AcertoAbono a : selectedAcertos) {
 
@@ -1091,7 +1069,7 @@ public class AcertoAbonos implements Serializable {
 			oa.setDataAbono(new Date());
 			ocorrenciaApuradas.salvaOcorrenciaApuradas(oa);
 
-		}// for
+		} // for
 
 	}//
 
@@ -1110,7 +1088,7 @@ public class AcertoAbonos implements Serializable {
 			listacolab.add(colaboradores.porPIS(a.getPis()));
 			listacerto.add(a);
 
-		}// for
+		} // for
 
 		pr.processarMarcacao(dtini, dtfim, false, listacolab, true, listacerto);
 
@@ -1120,8 +1098,7 @@ public class AcertoAbonos implements Serializable {
 		boolean r = false;
 
 		try {
-			System.out.println("selectedAcertos.size()"
-					+ selectedAcertos.size());
+			System.out.println("selectedAcertos.size()" + selectedAcertos.size());
 			r = selectedAcertos.size() > 0;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1133,8 +1110,7 @@ public class AcertoAbonos implements Serializable {
 	}
 
 	public void colaboradorSelecionado(SelectEvent event) {
-		System.out.println("COLABORADOR DIALOG "
-				+ ((Colaborador) event.getObject()).getNome());
+		System.out.println("COLABORADOR DIALOG " + ((Colaborador) event.getObject()).getNome());
 		nomeSele = ((Colaborador) event.getObject()).getNome();
 	}
 
@@ -1146,22 +1122,20 @@ public class AcertoAbonos implements Serializable {
 		String hav = "Nenhum";
 
 		// acho o horario programado para o dia
-		HorarioColaborador hc = marcacoes.horarioColaboradorDia(
-				acertoSelecionado.getData(), acertoSelecionado.getPis());
+		HorarioColaborador hc = marcacoes.horarioColaboradorDia(acertoSelecionado.getData(),
+				acertoSelecionado.getPis());
 
 		String jpql = " select  h2.jornada_id from horario  as h "
 				+ " inner join horario_jornada AS h2  ON h.horario_id = h2.horario_id "
 				+ " left join Jornada AS j   ON h2.Jornada_id = j.Jornada_id "
-				+ " where (1=1) and (h.horario_id = :horario) and "
-				+ "                (h2.seq =  ( SELECT "
+				+ " where (1=1) and (h.horario_id = :horario) and " + "                (h2.seq =  ( SELECT "
 				+ " 1 +  mod( (SELECT  :dia - cast( data_base as date) from Horario where horario_id= h2.horario_id  )  , CAST( vw_contaseqhorario.Expr1 AS BIGINT) ) "
 				+ " FROM    vw_contaSeqHorario INNER JOIN vw_totdiasDtBaseHohe "
 				+ " ON vw_contaseqhorario.horario_id = vw_totdiasDtBaseHohe.horario_id"
 				+ " WHERE        (vw_contaSeqHorario.horario_id = h2.horario_id ) ) )";
 
 		BigInteger resultado = (BigInteger) session.createSQLQuery(jpql)
-				.setParameter("dia", acertoSelecionado.getData())
-				.setParameter("horario", hc.getHorario().getId())
+				.setParameter("dia", acertoSelecionado.getData()).setParameter("horario", hc.getHorario().getId())
 				.uniqueResult();
 
 		jornada = jornadas.porId(resultado.longValue());
@@ -1211,14 +1185,12 @@ public class AcertoAbonos implements Serializable {
 				+ " (select motivoAfastamento_id from afastamento  where :dia between data_afastamento_inicial and data_afastamento_final and colaborador_id= hc.colaborador_id ) as Afastamento, "
 				+ " (select cast('Folga' as text) from folga  where :dia  between data_afastamento_inicial and data_afastamento_final and colaborador_id= hc.colaborador_id) as folga , "
 				+ " (select feriado from feriado where data_feriado = :dia and empresa_id=cola.empresa_id  ) as feriado, dsr,"
-				+ " hc.horario_id, empresa_id	"
-				+ " from horario  as h "
+				+ " hc.horario_id, empresa_id	" + " from horario  as h "
 				+ " inner join horario_jornada AS h2  ON h.horario_id = h2.horario_id "
 				+ " left join jornada AS j ON h2.Jornada_id = j.Jornada_id  "
 				+ " inner join  ( select * from horario_colaborador as hc where  cast(data_inicio as date) <= :dia and colaborador_id =:colaborador "
 				+ " order by data_inicio desc limit 1) as hc on (1=1 and (h.horario_id = hc.horario_id)) "
-				+ " inner join colaborador as cola ON (hc.colaborador_id=cola.id)	"
-				+ " and "
+				+ " inner join colaborador as cola ON (hc.colaborador_id=cola.id)	" + " and "
 				+ " (h2.seq =  ( SELECT "
 				+ " 1 +  mod( (SELECT  :dia - cast( data_base as date) from Horario as ho where horario_id= hc.horario_id  )  , CAST( vw_contaseqhorario.Expr1 AS BIGINT) ) "
 				+ " FROM    vw_contaSeqHorario INNER JOIN vw_totdiasDtBaseHohe "
@@ -1226,10 +1198,8 @@ public class AcertoAbonos implements Serializable {
 				+ " WHERE        (vw_contaSeqHorario.horario_id = hc.horario_id ) ) ) ";
 
 		try {
-			lo = (Object[]) session.createSQLQuery(jpql)
-					.setParameter("dia", acertoSelecionado.getData())
-					.setParameter("colaborador", hc.getColaborador())
-					.uniqueResult();
+			lo = (Object[]) session.createSQLQuery(jpql).setParameter("dia", acertoSelecionado.getData())
+					.setParameter("colaborador", hc.getColaborador()).uniqueResult();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1241,72 +1211,47 @@ public class AcertoAbonos implements Serializable {
 		ma = null;
 
 		if (lo[30] != null) {
-			ma = motivoAfastamentos.porId((long) ((BigInteger) lo[30])
-					.longValue());
+			ma = motivoAfastamentos.porId((long) ((BigInteger) lo[30]).longValue());
 		}
 
-		listaOcor = ocorrenciaApuradas
-				.achaOcorrenciasApuradasDataColaboradorDia(
-						acertoSelecionado.getData(), hc.getColaborador());
+		listaOcor = ocorrenciaApuradas.achaOcorrenciasApuradasDataColaboradorDia(acertoSelecionado.getData(),
+				hc.getColaborador());
 
 		for (Object[] ob : listaOcor) {
-			ocorrencias += "\n" + (String) ob[1] + " = "
-					+ rt.InteitoToHora((Integer) ob[0]);
+			ocorrencias += "\n" + (String) ob[1] + " = " + rt.InteitoToHora((Integer) ob[0]);
 		}
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy EEE");
 
 		HorarioAvulso horarioAvulso = new HorarioAvulso();
 		horarioAvulso = null;
-		horarioAvulso = horarioAvulsos.porDataCola(acertoSelecionado.getData(),
-				hc.getColaborador());
+		horarioAvulso = horarioAvulsos.porDataCola(acertoSelecionado.getData(), hc.getColaborador());
 
 		if (horarioAvulso != null) {
 			hav = horarioAvulso.getHorario().getHorario();
 		}
 
-		setDadosCalculo("Data : "
-				+ dateFormat.format(acertoSelecionado.getData())
-				+ "\nTipo regime : "
-				+ (String) lo[4]
-				+ "\nMarcacoes : "
-				+ ((mE1 == "") || (mE1.equals("00:00")) ? "" : getmE1())
-				+ " "
-				+ ((mS1 == "") || (mS1.equals("00:00")) ? "" : getmS1())
-				+ " "
-				+ ((mE2.isEmpty()) || (mE2.equals("00:00")) ? "" : getmE2())
-				+ " "
-				+ ((mS2.isEmpty()) || (mS2.equals("00:00")) ? "" : getmS2())
-				+ " "
-				+ ((mE3.isEmpty()) || (mE3.equals("00:00")) ? "" : getmE3())
-				+ " "
-				+ ((mS3.isEmpty()) || (mS3.equals("00:00")) ? "" : getmS3())
-				+ " "
-				+ ((mE4.isEmpty()) || (mE4.equals("00:00")) ? "" : getmE4())
-				+ " "
+		setDadosCalculo("Data : " + dateFormat.format(acertoSelecionado.getData()) + "\nTipo regime : " + (String) lo[4]
+				+ "\nMarcacoes : " + ((mE1 == "") || (mE1.equals("00:00")) ? "" : getmE1()) + " "
+				+ ((mS1 == "") || (mS1.equals("00:00")) ? "" : getmS1()) + " "
+				+ ((mE2.isEmpty()) || (mE2.equals("00:00")) ? "" : getmE2()) + " "
+				+ ((mS2.isEmpty()) || (mS2.equals("00:00")) ? "" : getmS2()) + " "
+				+ ((mE3.isEmpty()) || (mE3.equals("00:00")) ? "" : getmE3()) + " "
+				+ ((mS3.isEmpty()) || (mS3.equals("00:00")) ? "" : getmS3()) + " "
+				+ ((mE4.isEmpty()) || (mE4.equals("00:00")) ? "" : getmE4()) + " "
 				+ ((mS4.isEmpty()) || (mS4.equals("00:00")) ? "" : getmS4())
 
-				+ "\nJornada : "
-				+ (jornada.getE1() > 0 ? rt.InteitoToHora(jornada.getE1()) : "")
-				+ " "
-				+ (jornada.getS1() > 0 ? rt.InteitoToHora(jornada.getS1()) : "")
-				+ " "
-				+ (jornada.getE2() > 0 ? rt.InteitoToHora(jornada.getE2()) : "")
-				+ " "
-				+ (jornada.getS2() > 0 ? rt.InteitoToHora(jornada.getS2()) : "")
-				+ " "
-				+ (jornada.getE3() > 0 ? rt.InteitoToHora(jornada.getE3()) : "")
-				+ " "
-				+ (jornada.getS3() > 0 ? rt.InteitoToHora(jornada.getS3()) : "")
-				+ " "
-				+ (jornada.getE4() > 0 ? rt.InteitoToHora(jornada.getE4()) : "")
-				+ " "
-				+ (jornada.getS4() > 0 ? rt.InteitoToHora(jornada.getS4()) : "")
-				+ "\nHorario Avulso " + hav + " " + "\nAfastamento : "
-				+ (ma != null ? ma.getMotivoAfastamento() : "") + "\nFolga : "
+				+ "\nJornada : " + (jornada.getE1() > 0 ? rt.InteitoToHora(jornada.getE1()) : "") + " "
+				+ (jornada.getS1() > 0 ? rt.InteitoToHora(jornada.getS1()) : "") + " "
+				+ (jornada.getE2() > 0 ? rt.InteitoToHora(jornada.getE2()) : "") + " "
+				+ (jornada.getS2() > 0 ? rt.InteitoToHora(jornada.getS2()) : "") + " "
+				+ (jornada.getE3() > 0 ? rt.InteitoToHora(jornada.getE3()) : "") + " "
+				+ (jornada.getS3() > 0 ? rt.InteitoToHora(jornada.getS3()) : "") + " "
+				+ (jornada.getE4() > 0 ? rt.InteitoToHora(jornada.getE4()) : "") + " "
+				+ (jornada.getS4() > 0 ? rt.InteitoToHora(jornada.getS4()) : "") + "\nHorario Avulso " + hav + " "
+				+ "\nAfastamento : " + (ma != null ? ma.getMotivoAfastamento() : "") + "\nFolga : "
 				+ ((String) lo[31] != null ? "Sim" : "") + "\nFeriado : "
-				+ ((String) lo[32] != null ? (String) lo[32] : "")
-				+ "\n\nOcorrencias : " + ocorrencias
+				+ ((String) lo[32] != null ? (String) lo[32] : "") + "\n\nOcorrencias : " + ocorrencias
 
 		);
 	}
